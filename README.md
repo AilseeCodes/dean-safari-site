@@ -51,14 +51,14 @@ graph TD
 
 ---
 
-## 🔒 Repository Status
+## 🎨 Portfolio Showcase
 
-This repository is an archival showcase of a proprietary client project, shared exclusively for portfolio and recruitment evaluation purposes. The application relies on private database instances, protected cloud functions, and specific configurations that are not publicly available.
+This repository serves as a portfolio showcase of a client project. It is intended for code review, recruitment, and demonstration purposes.
 
-**Deployment, replication, or hosting of this codebase is strictly prohibited.**
+Please note that this application relies on private database instances, cloud functions, and specific configurations that are not included here, so it is not designed to be deployed or run locally as a standalone app.
 
 ---
 
 ## 📄 Licence
 
-This codebase is proprietary. It is provided here strictly for code-review and portfolio evaluation. Re-hosting, modification, deployment, replication, or commercial redistribution of any visual, structural, or functional asset is strictly prohibited. See the [LICENCE](LICENSE) file for more information.
+This codebase is provided for portfolio evaluation and code review. As it contains proprietary client assets and configurations, we kindly ask that you do not deploy, re-host, or use it for commercial purposes. See the [LICENSE](LICENSE) file for more details.
