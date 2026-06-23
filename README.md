@@ -10,6 +10,13 @@ A premium, serverless web application and administration suite designed for a lu
 
 ---
 
+## 🔗 Live Demos & Links
+* 🌍 **Live Client Website**: [www.deanmcgregorsafaris.com](https://www.deanmcgregorsafaris.com)
+* 🛠️ **Development / Staging Site**: [deansafaris.web.app](https://deansafaris.web.app)
+* 📺 **Admin Dashboard Walkthrough**: *(Coming soon to LinkedIn)*
+
+---
+
 ## 🌟 Key Features
 
 ### 1. Unified Administration Suite (`admin.html`)
