@@ -1,0 +1,38 @@
+# OS specific files
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+.DS_Store
+
+# IDE files
+.vscode/
+.idea/
+
+# Local assets (optional, but good to keep if they are small)
+# assets/images/
+
+# Dependencies
+node_modules/
+
+# Firebase
+.firebase/
+firebase-debug.log
+firebase-debug.*.log
+
+# Environment Variables
+.env
+.env.*
+
+# Logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Private Workspace and Keys
+scratch/
+.gemini/
+service-account.json
+developer_docs/
+DeansSafariSite_Handover/
+.agents/
+skills-lock.json

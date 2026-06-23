@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safari Wildlife Photography Gallery | Dean McGregor Safaris</title>
+    <meta name="description" content="View beautiful safari photography collections, custom guest encounters, and epic wildlife landscapes captured under the Zimbabwean sky.">
+    
+    <!-- Preconnect to speed up font delivery -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=66">
+    <link rel="icon" type="image/png" href="assets/images/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="assets/images/favicon.png" sizes="192x192">
+    <link rel="apple-touch-icon" href="assets/images/favicon.png">
+
+    <!-- Open Graph / Facebook Share Metadata -->
+    <meta property="og:title" content="Safari Wildlife Photography Gallery | Dean McGregor Safaris">
+    <meta property="og:description" content="View beautiful safari photography collections, custom guest encounters, and epic wildlife landscapes captured under the Zimbabwean sky.">
+    <meta property="og:image" content="https://www.deanmcgregorsafaris.com/assets/images/gallery/tentinthestars.jpeg">
+    <meta property="og:url" content="https://www.deanmcgregorsafaris.com/gallery">
+    <meta property="og:type" content="website">
+
+    <!-- Twitter Card Share Metadata -->
+    <meta name="twitter:card" content="summary_large_image">
+    <style>
+        /* Gallery Specific Styles */
+        .gallery-hero {
+            height: 60vh;
+            background: linear-gradient(rgba(0,0,0,0.4), rgba(0,0,0,0.4)), url('assets/images/gallery/tentinthestars.jpeg');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: var(--white);
+        }
+
+        .gallery-hero h1 {
+            font-size: clamp(3rem, 10vw, 5rem);
+            text-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
+
+        .collections-container {
+            padding: 5rem 0;
+            background: #8B7E66; /* Darker Khaki Beige */
+            min-height: 100vh;
+        }
+
+        .collection-block {
+            margin-bottom: 8rem;
+        }
+
+        .collection-title {
+            text-align: left;
+            font-size: 2.5rem;
+            margin-bottom: 4rem;
+            color: #F7F5F0; /* Off-white for better contrast on darker beige */
+            font-family: var(--font-primary);
+            position: relative;
+            padding-bottom: 1.5rem;
+        }
+
+        .collection-title::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0; /* Align underline to left */
+            width: 80px;
+            height: 3px;
+            background: var(--sunset-gold); /* Yellow line underline */
+        }
+
+        /* Interwoven Portal Grid - Free Roam Mosaic */
+        .portal-grid {
+            position: absolute;
+            left: 50%;
+            background: transparent;
+            transform-origin: top center;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .portal-item {
+            position: absolute;
+            overflow: hidden;
+            transition: transform 0.3s ease;
+        }
+
+        /* Wide-Screen Optimization */
+        .collections-container .container {
+            max-width: 95vw;
+            width: 100%;
+            margin: 0 auto;
+            position: relative;
+        }
+
+
+
+        .portal-item {
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            background: #2a2a2a;
+            border-radius: 0; /* Sharp corners */
+        }
+
+        .portal-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1), filter 0.6s ease;
+        }
+
+        /* Wrapper for image + overlay — lets .card-label sit outside below on mobile */
+        .card-image-wrap {
+            position: relative;
+            width: 100%;
+            height: 100%;
+        }
+
+        /* Title label below card — only shown in mobile-grid mode */
+        .card-label {
+            display: none;
+        }
+
+        .portal-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.4);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            transition: opacity 0.4s ease;
+            padding: 2rem;
+        }
+
+        .portal-title {
+            color: #fff;
+            font-family: 'Playfair Display', serif;
+            font-size: 2.2rem;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            text-align: center;
+            transform: translateY(10px);
+            transition: transform 0.4s ease;
+            text-shadow: 0 4px 15px rgba(0,0,0,0.5);
+        }
+
+        /* Hover States (Desktop/Fine Pointers) */
+        @media (pointer: fine) {
+            .portal-item:hover img {
+                transform: scale(1.05);
+                filter: brightness(0.7);
+            }
+            .portal-item:hover .portal-overlay {
+                opacity: 1;
+            }
+            .portal-item:hover .portal-title {
+                transform: translateY(0);
+            }
+        }
+
+        /* Vertical List for Zoomed Desktop */
+        .portal-grid.vertical-list {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4rem;
+            width: 100% !important;
+            transform: none !important;
+            left: 0 !important;
+            position: relative !important;
+        }
+
+        .portal-grid.vertical-list .portal-item {
+            position: relative !important;
+            width: 90% !important;
+            max-width: 600px !important;
+            height: 400px !important;
+            left: auto !important;
+            top: auto !important;
+            border-radius: 12px;
+            box-shadow: 0 15px 45px rgba(0,0,0,0.2);
+        }
+
+        .portal-grid.vertical-list .portal-overlay {
+            opacity: 1; /* Always visible in vertical list */
+            background: linear-gradient(transparent, rgba(0,0,0,0.8));
+            align-items: flex-end;
+            padding: 2.5rem;
+            transition: opacity 0.4s ease;
+        }
+
+        .portal-grid.vertical-list .portal-title {
+            font-size: 2.2rem;
+            transform: none; /* No transition needed if always visible */
+            text-align: left;
+            width: 100%;
+        }
+
+        /* Mobile 2-Column Card Grid (≤850px) */
+        @media (max-width: 850px) {
+            .collections-container .container {
+                padding: 0 1rem;
+                max-width: 100vw;
+                box-sizing: border-box;
+            }
+            .formal-intros {
+                padding: 0 0.5rem;
+                margin-bottom: 2rem !important;
+            }
+            .formal-intros .intro-block {
+                margin-bottom: 2rem !important;
+            }
+            .gallery-back-wrapper {
+                text-align: left !important;
+            }
+            /* No arrows or dots needed for simple grid layout */
+            .portal-nav-arrow,
+            .scroll-dots {
+                display: none !important;
+            }
+
+            /* 2-column CSS grid */
+            .portal-grid.mobile-grid {
+                display: grid !important;
+                grid-template-columns: 1fr 1fr;
+                gap: 1rem;
+                width: 100% !important;
+                position: relative !important;
+                left: 0 !important;
+                transform: none !important;
+                padding: 0.5rem;
+                box-sizing: border-box;
+            }
+
+            /* Cards: overflow visible so label below image is not clipped */
+            .portal-grid.mobile-grid .portal-item {
+                position: relative !important;
+                left: auto !important;
+                top: auto !important;
+                width: 100% !important;
+                height: auto !important;
+                overflow: visible !important;
+                background: transparent !important;
+                display: flex;
+                flex-direction: column;
+                cursor: pointer;
+            }
+
+            /* Image container: rounded, clipped, shadowed */
+            .portal-grid.mobile-grid .card-image-wrap {
+                border-radius: 14px;
+                overflow: hidden;
+                box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
+                aspect-ratio: 1 / 1;
+                width: 100%;
+                height: auto;
+            }
+
+            .portal-grid.mobile-grid .card-image-wrap img {
+                width: 100%;
+                height: 100%;
+                object-fit: cover;
+                display: block;
+                transition: transform 0.35s ease;
+            }
+
+            /* Subtle press feedback on tap */
+            .portal-grid.mobile-grid .portal-item:active .card-image-wrap {
+                transform: scale(0.97);
+                transition: transform 0.15s ease;
+            }
+
+            /* Overlay not needed — title is below the card instead */
+            .portal-grid.mobile-grid .portal-overlay {
+                display: none !important;
+            }
+
+            /* Yellow underlined collection name below each card */
+            .portal-grid.mobile-grid .card-label {
+                display: block;
+                color: var(--sunset-gold);
+                font-family: 'Playfair Display', serif;
+                font-size: 0.8rem;
+                font-weight: 600;
+                letter-spacing: 1.5px;
+                text-transform: uppercase;
+                text-decoration: underline;
+                text-underline-offset: 4px;
+                text-align: center;
+                padding: 0.6rem 0.25rem 0.25rem;
+                line-height: 1.3;
+            }
+        }
+
+        /* Navigation arrows — desktop/tablet only; hidden on mobile via above rule */
+        .portal-nav-arrow {
+            display: none;
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 50px;
+            height: 50px;
+            background: rgba(26, 26, 26, 0.4);
+            backdrop-filter: blur(8px);
+            -webkit-backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            color: var(--sunset-gold);
+            align-items: center;
+            justify-content: center;
+            z-index: 100;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        .portal-nav-arrow.left { left: 5px; }
+        .portal-nav-arrow.right { right: 5px; }
+        .portal-nav-arrow:active { transform: translateY(-50%) scale(0.9); background: var(--sunset-gold); }
+
+        /* Lightman Overlay Styles... (same as before) */
+        .lightman-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.9);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            z-index: 3000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .lightman-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .lightman-content {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 80px;
+        }
+
+        .lightman-img {
+            max-width: 100%;
+            max-height: 90vh;
+            object-fit: contain;
+            border-radius: 0;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+            transition: transform 0.3s ease;
+            pointer-events: auto;
+            -webkit-user-drag: none;
+        }
+
+        .lightman-close {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            color: #fff;
+            font-size: 3rem;
+            cursor: pointer;
+            opacity: 0.8;
+            transition: opacity 0.3s, transform 0.3s;
+            z-index: 3100;
+            line-height: 1;
+        }
+
+        .lightman-close:hover { 
+            opacity: 1;
+            transform: scale(1.1);
+        }
+
+        .lightman-counter {
+            position: absolute;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: #fff;
+            font-family: var(--font-secondary);
+            font-size: 1rem;
+            opacity: 0.8;
+            letter-spacing: 2px;
+            z-index: 3100;
+        }
+
+        .lightman-nav {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            pointer-events: none;
+            padding: 0 1rem;
+        }
+
+        .lightman-arrow {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            cursor: pointer;
+            pointer-events: auto;
+            transition: all 0.3s;
+        }
+
+        .lightman-arrow:hover {
+            background: var(--sunset-gold);
+            border-color: var(--sunset-gold);
+        }
+
+        @media (max-width: 768px) {
+            .lightman-content {
+                padding: 0;
+            }
+            .lightman-nav {
+                top: auto;
+                bottom: 2rem;
+                height: auto;
+                justify-content: center;
+                gap: 2rem;
+            }
+            .lightman-arrow {
+                width: 50px;
+                height: 50px;
+                background: rgba(0, 0, 0, 0.5);
+            }
+            .lightman-img {
+                max-height: 70vh;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar glass-panel">
+        <div class="container nav-wrapper">
+            <a href="index.html#hero" class="logo">DEAN McGREGOR <span>SAFARIS</span></a>
+            <button class="nav-toggle" aria-label="Toggle Navigation">
+                <span class="hamburger"></span>
+            </button>
+            <ul class="nav-links">
+                <li><a href="index.html#hero">Home</a></li>
+                <li class="nav-item dropdown">
+                    <a href="index.html#experience" class="nav-link dropdown-toggle">Your Guide</a>
+                    <ul class="dropdown-menu">
+                        <div class="dropdown-menu-inner">
+                             <li><a href="about-dean.html">Dean McGregor</a></li>
+                             <li><a href="index.html#conversation">Wild Words with Dean</a></li>
+                             <li><a href="index.html#testimonials">Guest Testimonials</a></li>
+                        </div>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a href="index.html#services" class="nav-link dropdown-toggle">Our Safaris</a>
+                    <ul class="dropdown-menu">
+                        <div class="dropdown-menu-inner" id="safaris-dropdown-list">
+                            <li><a href="safaris.html">Build Your Experience</a></li>
+                        </div>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a href="index.html#gallery" class="nav-link dropdown-toggle">Gallery</a>
+                    <ul class="dropdown-menu">
+                        <div class="dropdown-menu-inner">
+                            <li><a href="gallery.html">View Full Gallery</a></li>
+                            <li class="dropdown-item has-sub">
+                                <span class="sub-toggle">Collections</span>
+                                <ul class="sub-dropdown" id="collections-dropdown-list">
+                                    <!-- Dynamically populated from galleries -->
+                                </ul>
+                            </li>
+                        </div>
+                    </ul>
+                </li>
+                <li><a href="index.html#masterclass">Why Choose Us</a></li>
+                <li><a href="index.html#contact">Contact Us</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Gallery Hero -->
+    <header class="gallery-hero">
+        <div class="container">
+            <span class="section-tag" style="color: #fff; opacity: 0.8;">The Visual Journey</span>
+            <h1>The Gallery</h1>
+        </div>
+    </header>
+
+    <!-- Main Portal Grid -->
+    <main class="collections-container" style="padding-top: 2rem;">
+        <div class="container" style="position: relative;">
+            <div class="formal-intros" id="gallery-intro" style="margin-bottom: 4rem; display: flex; flex-direction: column; position: relative; z-index: 10;">
+                <div class="intro-block" style="text-align: center; max-width: 1000px; margin: 0 auto; margin-bottom: 3rem;">
+                    <p style="font-family: 'Playfair Display', serif; font-size: 1.2rem; color: #1a1a1a; line-height: 1.6; font-style: italic; letter-spacing: 0.5px;">
+                        We thank our guests for sharing and granting us permission to <span style="color: var(--sunset-gold);">showcase</span> their extraordinary wildlife and scenic photography taken while on safari with Dean McGregor
+                    </p>
+                    <div style="width: 250px; height: 2px; background: var(--sunset-gold); margin: 2rem auto 0; box-shadow: 0 0 10px rgba(227, 168, 87, 0.3);"></div>
+                </div>
+                
+                <div class="gallery-back-wrapper" id="gallery-back-wrapper" style="text-align: left; width: 100%; transition: all 0.3s ease;">
+                    <a href="index.html#hero" class="park-back-link" style="margin-top: 0; margin-bottom: 0;"><span class="back-arrow">←</span> Back to Home</a>
+                </div>
+            </div>
+            
+            <div id="portal-prev" class="portal-nav-arrow left"><i class="fas fa-chevron-left"></i></div>
+            <div id="portal-next" class="portal-nav-arrow right"><i class="fas fa-chevron-right"></i></div>
+            
+            <div id="portal-grid" class="portal-grid">
+                <!-- Collection Covers Injected Here -->
+            </div>
+            <div id="portal-dots" class="scroll-dots" style="display: none;"></div>
+        </div>
+    </main>
+
+    <!-- Lightman Overlay -->
+    <div class="lightman-overlay" id="lightman">
+        <div class="lightman-content">
+            <span class="lightman-close" id="lightman-close">&times;</span>
+            <div class="lightman-counter" id="lightman-counter">1 / 1</div>
+            <img src="" alt="Enlarged Safari Photo" class="lightman-img" id="lightman-img">
+            <div class="lightman-nav">
+                <div class="lightman-arrow" id="lightman-prev">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                </div>
+                <div class="lightman-arrow" id="lightman-next">
+                    <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"></polyline></svg>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script type="module">
+        import { app } from './firebase-init.js';
+        import { getFirestore, collection, onSnapshot, query, orderBy, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
+
+        const db = getFirestore(app);
+        const portalGrid = document.getElementById('portal-grid');
+
+        async function renderPortal() {
+            const configSnap = await getDoc(doc(db, "site_config", "portal_layout"));
+            const portalConfig = configSnap.exists() ? configSnap.data() : { order: [], layout: {} };
+
+            onSnapshot(collection(db, "client_galleries"), (snapshot) => {
+                if (snapshot.empty) {
+                    portalGrid.innerHTML = '<p style="text-align:center; opacity:0.6; grid-column: 1/-1;">No safari collections have been established yet.</p>';
+                    return;
+                }
+
+                const collections = snapshot.docs
+                    .map(doc => ({ id: doc.id, ...doc.data() }))
+                    .filter(data => data.is_placed_in_mosaic !== false);
+                
+                collections.sort((a, b) => {
+                    const indexA = portalConfig.order.indexOf(a.id);
+                    const indexB = portalConfig.order.indexOf(b.id);
+                    return (indexA === -1 ? 999 : indexA) - (indexB === -1 ? 999 : indexB);
+                });
+
+                function applyLayout() {
+                    const dotsContainer = document.getElementById('portal-dots');
+                    const btnPrev = document.getElementById('portal-prev');
+                    const btnNext = document.getElementById('portal-next');
+                    const backWrapper = document.getElementById('gallery-back-wrapper');
+                    
+                    portalGrid.className = 'portal-grid';
+                    const isTouch = window.matchMedia('(pointer: coarse)').matches;
+                    const isSmallWidth = window.innerWidth <= 850;
+                    
+                    let mode = 'collage';
+                    if (isSmallWidth) mode = 'horizontal';
+                    // Optional: vertical list for zoomed desktop with large pixel ratio
+                    else if (window.devicePixelRatio > 2 && window.innerWidth > 850) mode = 'vertical';
+
+                    // UI Reset — dots not used in mobile-grid layout
+                    dotsContainer.innerHTML = '';
+                    dotsContainer.style.display = 'none';
+                    portalGrid.classList.toggle('mobile-grid', mode === 'horizontal');
+                    portalGrid.classList.toggle('vertical-list', mode === 'vertical');
+                    
+                    if (mode === 'collage') {
+                        portalGrid.style.left = '50%';
+                        portalGrid.style.position = 'absolute';
+                        portalGrid.style.transformOrigin = 'top center';
+                    }
+
+                    if (mode === 'vertical') {
+                        portalGrid.style.minHeight = 'auto';
+                        portalGrid.parentElement.style.height = 'auto';
+                        portalGrid.style.top = '0';
+                        portalGrid.style.transform = 'none';
+                        portalGrid.style.left = '0';
+                        portalGrid.style.position = 'relative';
+                        portalGrid.style.width = '100%';
+
+                        if (backWrapper) {
+                            backWrapper.style.maxWidth = '600px';
+                            backWrapper.style.width = '90%';
+                            backWrapper.style.margin = '0 auto';
+                            backWrapper.style.padding = '0';
+                        }
+                    }
+
+                    if (mode === 'horizontal') {
+                        // Mobile 2-column grid: CSS handles layout, just reset inline styles
+                        portalGrid.style.position = 'relative';
+                        portalGrid.style.left = '0';
+                        portalGrid.style.transform = 'none';
+                        portalGrid.style.width = '100%';
+                        portalGrid.parentElement.style.height = 'auto';
+
+                        if (backWrapper) {
+                            backWrapper.style.maxWidth = '100%';
+                            backWrapper.style.margin = '0';
+                            backWrapper.style.padding = '0';
+                        }
+                    }
+
+                    portalGrid.innerHTML = '';
+                    let minX = Infinity;
+                    let maxRight = 0;
+                    let maxBottom = 0;
+
+                    collections.forEach((data, index) => {
+                        const coverObj = data.albumCover || (data.photos && data.photos[0]);
+                        const coverUrl = typeof coverObj === 'object' ? coverObj.url : coverObj;
+                        const layout = portalConfig.layout[data.id] || { x: (index % 5) * 320, y: Math.floor(index / 5) * 240, w: 310, h: 230 };
+                        const focal = (layout && layout.focal) ? layout.focal : ((coverObj && coverObj.focal) ? coverObj.focal : { x: 50, y: 50 });
+                        const scale = (coverObj && coverObj.scale) ? coverObj.scale : 1.0;
+                        if (!coverUrl) return;
+
+                        const item = document.createElement('a');
+                        item.className = 'portal-item';
+                        item.href = `collection.html?id=${data.id}`;
+                        item.style.textDecoration = 'none';
+                        item.style.color = 'inherit';
+                        
+                        if (mode === 'collage') {
+                            item.style.position = 'absolute';
+                            item.style.left = `${layout.x}px`;
+                            item.style.top = `${layout.y}px`;
+                            item.style.width = `${layout.w}px`;
+                            item.style.height = `${layout.h}px`;
+                            minX = Math.min(minX, layout.x);
+                            maxRight = Math.max(maxRight, layout.x + layout.w);
+                            maxBottom = Math.max(maxBottom, layout.y + layout.h);
+                        }
+ 
+                        item.innerHTML = `
+                            <div class="card-image-wrap">
+                                <img src="${coverUrl}" style="object-position: ${focal.x}% ${focal.y}%; transform: scale(${scale});">
+                                <div class="portal-overlay">
+                                    <h2 class="portal-title" style="font-size: ${mode !== 'collage' ? 2 : Math.min(2.5, layout.w/150)}rem">${data.title}</h2>
+                                </div>
+                            </div>
+                            <div class="card-label">${data.title}</div>
+                        `;
+                        portalGrid.appendChild(item);
+                    });
+
+                    if (mode === 'collage') {
+                        portalGrid.style.width = `${maxRight}px`;
+                        const container = portalGrid.parentElement;
+                        const intro = document.getElementById('gallery-intro');
+                        const availableWidth = container.offsetWidth;
+                        
+                        // Refined Desktop Scaling: Avoid extreme shrinkage and center properly
+                        const rawScale = availableWidth / (maxRight + 60);
+                        const scale = Math.max(0.6, Math.min(1.1, rawScale)); 
+                        
+                        portalGrid.style.transform = `translateX(-50%) scale(${scale})`;
+                        const introHeight = intro ? intro.offsetHeight : 0;
+                        portalGrid.style.top = `${introHeight + 30}px`;
+                        container.style.height = `${introHeight + (maxBottom * scale) + 150}px`;
+
+                        if (backWrapper) {
+                            backWrapper.style.maxWidth = `${maxRight * scale}px`;
+                            backWrapper.style.margin = '0 auto';
+                            const computedMinX = minX === Infinity ? 0 : minX;
+                            backWrapper.style.padding = `0 0 0 ${computedMinX * scale}px`;
+                        }
+                    }
+
+                    if (mode === 'horizontal') {
+                        // Mobile 2-column grid: no scroll sync needed, parent height is auto
+                        portalGrid.parentElement.style.height = 'auto';
+                    }
+                }
+
+                window.addEventListener('resize', () => {
+                    // Prevent desktop scaling glitches by forcing a slight delay on resize calculation
+                    clearTimeout(window.resizeTimer);
+                    window.resizeTimer = setTimeout(applyLayout, 100);
+                });
+                applyLayout();
+
+                // After layout, scroll to the collection the user came back from
+                const scrollToId = new URLSearchParams(window.location.search).get('scrollTo');
+                if (scrollToId) {
+                    // Small delay to let the DOM paint fully before scrolling
+                    setTimeout(() => {
+                        const items = Array.from(portalGrid.querySelectorAll('.portal-item'));
+                        const targetIndex = collections.findIndex(c => c.id === scrollToId);
+                        if (targetIndex < 0) return;
+
+                        const isMobileGrid = portalGrid.classList.contains('mobile-grid');
+                        const isVertical = portalGrid.classList.contains('vertical-list');
+
+                        if (isMobileGrid || isVertical) {
+                            // Grid/vertical: use robust scroll centering calculation to bring card perfectly into view
+                            const targetItem = items[targetIndex];
+                            if (targetItem) {
+                                const scrollToTarget = () => {
+                                    const rect = targetItem.getBoundingClientRect();
+                                    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+                                    const targetTop = rect.top + scrollTop;
+                                    const viewportHeight = window.innerHeight;
+                                    const cardHeight = targetItem.offsetHeight || 250;
+                                    const scrollPos = targetTop - (viewportHeight / 2) + (cardHeight / 2);
+                                    window.scrollTo({ top: scrollPos, behavior: 'auto' });
+                                };
+                                // Initial scroll
+                                scrollToTarget();
+                                // Staggered backups to account for subsequent lazy rendering and layout adjustments
+                                setTimeout(scrollToTarget, 100);
+                                setTimeout(scrollToTarget, 350);
+                            }
+                        }
+                        // Clear the param so a manual refresh doesn't re-scroll
+                        history.replaceState(null, '', 'gallery.html');
+                    }, 150);
+                }
+            });
+        }
+        renderPortal();
+    </script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <footer>
+        <div class="container footer-content">
+            <div class="footer-grid">
+                <div class="footer-left">
+                    <p class="footer-address">Plot 141 Monde Village, Victoria Falls, Zimbabwe.</p>
+                    <div class="footer-contact-item">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.246 2.248 3.484 5.232 3.484 8.412-.003 6.557-5.338 11.892-11.893 11.892-1.997-.001-3.951-.5-5.688-1.448l-6.309 1.656zm6.29-4.171c1.589.945 3.554 1.443 5.548 1.444 5.46 0 9.894-4.434 9.897-9.896 0-2.646-1.03-5.133-2.901-7.004-1.871-1.871-4.358-2.901-7.004-2.902-5.463 0-9.897 4.436-9.9 9.899 0 2.081.541 4.111 1.566 5.873l-1.006 3.677 3.768-.988l.032-.016z" />
+                        </svg>
+                        <a href="https://wa.me/263773423079">+263 77 342 3079</a>
+                    </div>
+                    <div class="footer-contact-item">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                            <polyline points="22,6 12,13 2,6"></polyline>
+                        </svg>
+                        <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#100;&#101;&#97;&#110;&#109;&#99;&#103;&#114;&#101;&#103;&#111;&#114;&#115;&#97;&#102;&#97;&#114;&#105;&#115;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;">&#100;&#101;&#97;&#110;&#109;&#99;&#103;&#114;&#101;&#103;&#111;&#114;&#115;&#97;&#102;&#97;&#114;&#105;&#115;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;</a>
+                    </div>
+                </div>
+
+                <div class="footer-center">
+                    <p>&copy; <span id="year"></span> Dean McGregor Safaris. All rights reserved.</p>
+                    <p class="motto">"Guided by Nature. Trained by Experience."</p>
+                    <p class="footer-links">
+                        <a href="#" class="privacy-trigger">Privacy &amp; Data Protection</a> |
+                        <a href="#" class="acknowledgements-trigger">Acknowledgements</a>
+                    </p>
+                </div>
+
+                <div class="footer-right">
+                    <div class="footer-social">
+                        <a href="#" class="secure-social" data-platform="instagram" data-handle="sirafasrogergcm" aria-label="Instagram">
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                            </svg>
+                        </a>
+                        <a href="#" class="secure-social" data-platform="facebook" data-handle="10674890787516=di?php.eliforp" aria-label="Facebook">
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Privacy Modal -->
+    <div id="privacy-modal" class="modal-overlay">
+        <div class="modal-container glass-card">
+            <button class="modal-close" aria-label="Close modal">&times;</button>
+            <div class="modal-content policy-content" id="privacy-content"></div>
+        </div>
+    </div>
+
+    <!-- Acknowledgements Modal -->
+    <div id="acknowledgements-modal" class="modal-overlay">
+        <div class="modal-container glass-card">
+            <button class="modal-close" aria-label="Close modal">&times;</button>
+            <div class="modal-content policy-content" id="acknowledgements-content">
+                <h2>Acknowledgements</h2>
+                <div class="policy-section">
+                    <h3>Web Design &amp; Development</h3>
+                    <p>We thank <strong>Ailsa Watson</strong> for the design and development of this digital platform. Built entirely from the ground up, this site leverages a secure, high-performance architecture utilizing Google Antigravity and Firebase hosting. Throughout this project, Ailsa managed the full initial infrastructure configuration and security-conscious backend deployment to the final interface design and project handover.</p>
+                    <p>This project was developed in close collaboration with business owner <strong>Justine McGregor</strong>, whose input was instrumental in refining the platform's content and user experience.</p>
+                    <p>Ailsa Watson is a Zoologist with a postgraduate background in Applied Conservation Science and African Ecosystems Management, as well as a qualified FGASA Level 2 Field Guide. You can learn more about her professional background and portfolio at <a href="#" class="secure-linkedin" data-href="/mja6202001-nosliw-alsi/ni/moc.nideknil.www//:sptth" style="color: var(--accent-gold); font-weight: 600; text-decoration: none;">LinkedIn Profile</a>.</p>
+                </div>
+                <div id="photographers-acknowledgements" class="policy-section" style="display:none;">
+                    <h3>Photography</h3>
+                    <p>We extend our gratitude to the talented photographers whose work brings this platform to life:</p>
+                    <ul id="photographers-list" style="margin: 0.5rem 0 0 1.2rem; padding: 0; line-height: 2;"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="firebase-init.js?v=43"></script>
+    <script type="module" src="settings.js?v=46"></script>
+    <script src="script.js?v=28" defer></script>
+</body>
+
+</html>

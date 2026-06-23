@@ -1,0 +1,54 @@
+{
+  "firestore": {
+    "database": "(default)",
+    "location": "europe-west2",
+    "rules": "firestore.rules",
+    "indexes": "firestore.indexes.json"
+  },
+  "hosting": {
+    "public": ".",
+    "cleanUrls": true,
+    "ignore": [
+      "firebase.json",
+      "**/.*",
+      "node_modules/**",
+      "**/node_modules/**",
+      "developer_docs/**",
+      "scratch/**",
+      "*.md",
+      "package.json",
+      "package-lock.json",
+      "skills-lock.json",
+      "functions/**",
+      "firestore.rules",
+      "firestore.indexes.json",
+      "storage.rules",
+      ".firebaserc",
+      ".agents/**"
+    ]
+  },
+  "storage": {
+    "rules": "storage.rules"
+  },
+  "auth": {
+    "providers": {
+      "emailPassword": true,
+      "googleSignIn": {
+        "oAuthBrandDisplayName": "Dean Safaris",
+        "supportEmail": "support@undefined.firebaseapp.com"
+      }
+    }
+  },
+  "functions": [
+    {
+      "source": "functions",
+      "codebase": "default",
+      "ignore": [
+        "node_modules",
+        ".git",
+        "firebase-debug.log",
+        "firebase-debug.*.log"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,2767 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Dean McGregor Safaris - Admin Portal">
+    <title>Admin Portal - Dean McGregor Safaris</title>
+    <!-- CSS Reset and Variables -->
+    <link rel="stylesheet" href="style.css?v=66">
+    <link rel="icon" type="image/png" href="assets/images/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="assets/images/favicon.png" sizes="192x192">
+    <link rel="apple-touch-icon" href="assets/images/favicon.png">
+    <!-- Google Fonts: Inter -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    <!-- Firebase Auth and Logic -->
+    <script type="module" src="firebase-init.js?v=43"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/Sortable.min.js"></script>
+    <!-- Add Swap Plugin -->
+    <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.0/plugins/Swap.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script type="module" src="admin.js?v=11"></script>
+    <style>
+        :root {
+            --sidebar-bg: #1a1a1a;
+            --sidebar-hover: #2a2a2a;
+            --content-bg: #f8f9fa;
+            --accent-gold: #E3A857;
+            --text-dark: #2F2F2F;
+            --text-light: #F7F5F0;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
+            background: var(--content-bg);
+            font-family: 'Inter', sans-serif;
+            display: block; /* Override previous flex-center */
+        }
+
+        /* Layout Grid */
+        .admin-layout {
+            display: flex;
+            min-height: 100vh;
+            width: 100%;
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            background: var(--sidebar-bg);
+            color: var(--text-light);
+            display: flex;
+            flex-direction: column;
+            padding: 2rem 0;
+            position: fixed;
+            left: 0;
+            top: 0;
+            width: 260px;
+            height: 100vh;
+            box-shadow: 4px 0 10px rgba(0,0,0,0.1);
+            overflow-y: auto;
+            z-index: 1000;
+            flex-shrink: 0;
+        }
+
+        .sidebar-brand {
+            padding: 0 2rem 3rem;
+            font-size: 1.2rem;
+            font-weight: 700;
+            letter-spacing: 1px;
+            color: var(--accent-gold);
+            flex-shrink: 0;
+        }
+
+        .nav-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            flex-grow: 1;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 2rem;
+            color: rgba(255,255,255,0.7);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            cursor: pointer;
+            border-left: 4px solid transparent;
+        }
+
+        .nav-link:hover, .nav-link.active {
+            background: var(--sidebar-hover);
+            color: var(--text-light);
+            border-left-color: var(--accent-gold);
+        }
+
+        .nav-link i {
+            width: 20px;
+            text-align: center;
+        }
+
+        .sidebar-bottom {
+            padding: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            flex-shrink: 0;
+        }
+
+        .logout-link {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #ff6b6b;
+            text-decoration: none;
+            margin-top: 1.5rem;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* Premium Toggle Switch style */
+        .switch-container {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+            margin-bottom: 1rem;
+            cursor: pointer;
+            user-select: none;
+            width: fit-content;
+        }
+        .switch-input {
+            display: none;
+        }
+        .switch-slider {
+            position: relative;
+            width: 44px;
+            height: 22px;
+            background-color: rgba(0, 0, 0, 0.1);
+            border: 1px solid rgba(0, 0, 0, 0.1);
+            border-radius: 20px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .switch-slider::before {
+            content: "";
+            position: absolute;
+            width: 14px;
+            height: 14px;
+            left: 3px;
+            bottom: 3px;
+            background-color: #fff;
+            border-radius: 50%;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .switch-input:checked + .switch-slider {
+            background-color: var(--accent-gold);
+            border-color: var(--accent-gold);
+        }
+        .switch-input:checked + .switch-slider::before {
+            transform: translateX(22px);
+        }
+        .switch-label {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            opacity: 0.85;
+            cursor: pointer;
+        }
+
+        /* Content Area */
+        .main-content {
+            padding: 3rem 4rem;
+            flex-grow: 1;
+            width: calc(100% - 260px);
+            margin-left: 260px;
+            box-sizing: border-box;
+        }
+
+        /* Wide Section Mode for Canvas */
+        .view-section.full-width {
+            max-width: none !important;
+            padding: 0;
+        }
+
+        .view-section {
+            display: none;
+            animation: slideIn 0.4s ease-out;
+        }
+
+        .view-section.active {
+            display: block;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateX(20px); }
+            to { opacity: 1; transform: translateX(0); }
+        }
+
+        .section-header {
+            margin-bottom: 3rem;
+        }
+
+        .section-header h1 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin: 0;
+        }
+
+        /* Modern Form Styling */
+        .glass-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.05);
+            max-width: 900px;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: #555;
+            font-size: 0.9rem;
+        }
+
+        .field-tip {
+            display: block;
+            font-size: 0.75rem;
+            color: #888;
+            margin-top: 5px;
+            font-weight: 500;
+        }
+        .field-tip i {
+            color: #c8963e;
+            margin-right: 4px;
+        }
+
+
+        .form-group input, .form-group textarea, .form-group select {
+            width: 100%;
+            padding: 1rem;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 1rem;
+            transition: border-color 0.3s;
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--accent-gold);
+        }
+
+        .btn-primary {
+            background: var(--accent-gold);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 8px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1rem;
+        }
+
+        .btn-primary:hover {
+            background: #d4984a;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(227, 168, 87, 0.3);
+        }
+
+        /* Confirmation Modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.7);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 5000;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.05); opacity: 0.8; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        .modal-card {
+            background: white;
+            padding: 2.5rem;
+            border-radius: 16px;
+            text-align: center;
+            max-width: 400px;
+            width: 90%;
+        }
+
+        .modal-btns {
+            display: flex;
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .modal-btns button {
+            flex: 1;
+        }
+
+        /* Mobile Menu */
+        .mobile-toggle {
+            display: none;
+            position: fixed;
+            top: 1rem;
+            left: 1rem;
+            z-index: 4000;
+            background: var(--sidebar-bg);
+            color: white;
+            border: none;
+            width: 45px;
+            height: 45px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+
+        @media (max-width: 1024px) {
+            .admin-layout {
+                grid-template-columns: 1fr;
+            }
+            .sidebar {
+                position: fixed;
+                left: -260px;
+                transition: left 0.3s ease;
+                z-index: 4500;
+            }
+            .sidebar.active {
+                left: 0;
+            }
+            .main-content {
+                padding: 5rem 1.5rem;
+                width: 100%;
+                margin-left: 0;
+            }
+            .mobile-toggle {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+        }
+
+        /* --- Live Editor Grid Styles --- */
+        .live-grid-container {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-auto-rows: 250px; /* Matched to public site */
+            grid-auto-flow: dense;
+            gap: 0; /* Matched to public site */
+            background: #8B7E66; /* Matched to public site background */
+            padding: 0;
+            border-radius: 0;
+            min-height: 500px;
+            max-width: 1600px; /* Matched to public site wide-screen constraint */
+            margin: 0 auto;
+            border: 1px solid rgba(255,255,255,0.1);
+            overflow: hidden;
+        }
+
+        .live-grid-container.mobile {
+            grid-template-columns: 1fr;
+            max-width: 375px;
+            margin: 0 auto;
+        }
+
+        .live-grid-item {
+            position: relative;
+            cursor: grab;
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .live-grid-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            pointer-events: none;
+        }
+
+        .live-grid-item.big {
+            grid-column: span 2;
+            grid-row: span 2;
+        }
+
+        .live-grid-item.wide {
+            grid-column: span 2;
+        }
+
+        .live-grid-item.selected {
+            outline: 3px solid var(--accent-gold);
+            outline-offset: -3px;
+            z-index: 10;
+        }
+
+        .focal-hint {
+            position: absolute;
+            bottom: 1rem;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.8);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            pointer-events: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+            white-space: nowrap;
+            z-index: 100;
+        }
+
+        .live-grid-item.selected .focal-hint {
+            opacity: 1;
+        }
+
+        /* SortableJS Ghost Styles */
+        .sortable-ghost {
+            opacity: 0.3;
+            transform: scale(0.95);
+        }
+
+        .sortable-drag {
+            opacity: 0.7;
+            transform: scale(0.98);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+            z-index: 1000;
+        }
+
+        .live-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(227, 168, 87, 0.1);
+            color: var(--accent-gold);
+            padding: 0.4rem 0.8rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            border: 1px solid rgba(227, 168, 87, 0.2);
+            margin-bottom: 1rem;
+        }
+
+        .live-badge i {
+            font-size: 0.6rem;
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 1; }
+            50% { opacity: 0.4; }
+            100% { opacity: 1; }
+        }
+
+        /* --- Reorder Banner Styles --- */
+        .reorder-banner {
+            margin-top: 2rem;
+            background: #2a2a2a;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .reorder-banner h4 {
+            color: var(--accent-gold);
+            margin: 0 0 1rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .reorder-strip {
+            display: flex;
+            gap: 10px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            cursor: grab;
+        }
+
+        .reorder-strip::-webkit-scrollbar {
+            height: 6px;
+        }
+
+        .reorder-strip::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+        }
+
+        .strip-item {
+            flex: 0 0 60px;
+            height: 60px;
+            border-radius: 4px;
+            overflow: hidden;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+
+        .strip-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .strip-item.sortable-ghost {
+            opacity: 0.2;
+            border-color: var(--accent-gold);
+        }
+
+        /* --- Template Selector Styles --- */
+        .template-selector {
+            margin-top: 2rem;
+            border-top: 1px solid #eee;
+            padding-top: 2rem;
+        }
+
+        .template-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 1rem;
+        }
+
+        .template-card {
+            background: #f5f5f5;
+            border: 2px solid transparent;
+            border-radius: 8px;
+            padding: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+
+        .template-card:hover {
+            border-color: #ddd;
+            background: #eee;
+        }
+
+        .template-card.active {
+            border-color: var(--accent-gold);
+            background: rgba(227, 168, 87, 0.05);
+        }
+
+        .template-icon {
+            display: grid;
+            gap: 2px;
+            width: 100%;
+            height: 60px;
+            margin-bottom: 8px;
+            background: #fff;
+            border: 1px solid #eee;
+            padding: 4px;
+        }
+
+        /* Template Visual Icons */
+        .icon-t1 { grid-template-columns: repeat(4, 1fr); grid-template-rows: repeat(2, 1fr); }
+        .icon-t1 div:nth-child(1) { grid-column: span 2; grid-row: span 2; background: #ccc; }
+        .icon-t1 div:nth-child(2) { grid-column: span 2; background: #eee; }
+        .icon-t1 div:nth-child(n+3) { background: #eee; }
+
+        .icon-t2 { grid-template-columns: repeat(3, 1fr); }
+        .icon-t2 div { background: #eee; }
+        .icon-t2 div:nth-child(odd) { grid-column: span 2; background: #ccc; }
+
+        .icon-t3 { grid-template-columns: repeat(4, 1fr); }
+        .icon-t3 div { background: #eee; }
+        .icon-t3 div:nth-child(4n+1) { grid-column: span 4; height: 30px; background: #ccc; }
+
+        .icon-t4 { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 20px; }
+        .icon-t4 div { background: #eee; }
+        .icon-t4 div:nth-child(3n) { grid-row: span 2; background: #ccc; }
+
+        .template-card span {
+            font-size: 0.7rem;
+            font-weight: 700;
+            color: #666;
+            text-transform: uppercase;
+        }
+
+        /* --- Portal Canvas Editor Styles --- */
+        .canvas-wrapper {
+            position: relative;
+            background: #1a1a1a;
+            border-radius: 12px;
+            padding: 40px;
+            overflow: auto;
+            min-height: 800px;
+            border: 4px solid #333;
+        }
+
+        .canvas-container {
+            position: absolute;
+            width: 1920px;
+            height: 3000px;
+            background: #2a2a2a;
+            left: 50%;
+            transform: translateX(-50%) scale(1);
+            transform-origin: top center;
+            transition: transform 0.2s ease;
+            box-shadow: 0 0 100px rgba(0,0,0,0.5);
+        }
+
+        /* Guide Lines */
+        .guide-line {
+            position: absolute;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .guide-vertical {
+            top: 0;
+            bottom: 0;
+            width: 1px;
+            background: rgba(227, 168, 87, 0.3); /* Soft gold */
+        }
+
+        .guide-horizontal {
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: rgba(227, 168, 87, 0.3);
+        }
+
+        .screen-boundary {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 1600px; /* Your standard desktop width */
+            height: 100%;
+            border-left: 2px dashed rgba(255,255,255,0.2);
+            border-right: 2px dashed rgba(255,255,255,0.2);
+            pointer-events: none;
+            z-index: 4;
+        }
+
+        .screen-boundary::after {
+            content: 'STANDARD DESKTOP VIEW (1600px)';
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            font-size: 10px;
+            color: rgba(255,255,255,0.4);
+            letter-spacing: 1px;
+        }
+
+        .center-marker {
+            position: absolute;
+            top: 0;
+            left: 50%;
+            width: 0; /* Use border for dashed effect */
+            height: 100%;
+            border-left: 2px dashed var(--accent-gold);
+            opacity: 0.6;
+            pointer-events: none;
+            z-index: 6;
+        }
+
+        .center-marker::after {
+            content: 'CENTER';
+            position: absolute;
+            top: 10px;
+            left: 5px;
+            font-size: 10px;
+            color: var(--accent-gold);
+            font-weight: bold;
+        }
+
+        .zoom-controls {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+            background: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+            width: fit-content;
+        }
+
+        .canvas-item {
+            position: absolute;
+            background: #444;
+            border: 2px solid rgba(255,255,255,0.1);
+            overflow: hidden;
+            cursor: move;
+            transition: border-color 0.3s;
+        }
+
+        .canvas-item:hover {
+            border-color: var(--accent-gold);
+        }
+
+        .canvas-item.selected {
+            border: 3px solid white !important;
+            box-shadow: 0 0 15px rgba(255,255,255,0.5);
+            z-index: 50 !important;
+        }
+
+        .canvas-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            pointer-events: none;
+        }
+
+        .canvas-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.8rem;
+            font-weight: bold;
+            text-shadow: 0 1px 3px rgba(0,0,0,0.8);
+            text-align: center;
+            padding: 10px;
+        }
+
+        .resize-handle {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 20px;
+            height: 20px;
+            background: var(--accent-gold);
+            cursor: nwse-resize;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 10px;
+        }
+
+        .canvas-item.oversized {
+            border: 3px solid red !important;
+        }
+
+        .canvas-item.locked {
+            border: 2px solid var(--accent-gold) !important;
+            cursor: default;
+        }
+
+        .canvas-item.locked .resize-handle {
+            display: none;
+        }
+
+        .lock-indicator {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: var(--accent-gold);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.6rem;
+            display: none;
+            z-index: 20;
+        }
+
+        .canvas-item.locked .lock-indicator {
+            display: block;
+        }
+
+        /* --- Global Undo/Redo Controls --- */
+        .global-controls {
+            position: fixed;
+            top: 1.5rem;
+            right: 4rem;
+            display: flex;
+            gap: 0.5rem;
+            z-index: 4000;
+        }
+
+        .control-btn {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: white;
+            border: 1px solid #ddd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-dark);
+            cursor: pointer;
+            transition: all 0.2s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .control-btn:hover {
+            background: #f8f9fa;
+            border-color: var(--accent-gold);
+            color: var(--accent-gold);
+        }
+
+        .control-btn:disabled {
+            opacity: 0.3;
+            cursor: not-allowed;
+        }
+
+        /* --- Cheat Sheet Pop-up --- */
+        .cheat-sheet-trigger {
+            position: fixed;
+            bottom: 2rem;
+            right: 2rem;
+            width: 50px;
+            height: 50px;
+            background: var(--sidebar-bg);
+            color: var(--accent-gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            z-index: 5000;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border: 2px solid var(--accent-gold);
+            transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .cheat-sheet-trigger:hover {
+            transform: scale(1.1) rotate(15deg);
+        }
+
+        .cheat-modal-card {
+            background: white;
+            width: 500px;
+            max-width: 90vw;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.4);
+        }
+
+        .cheat-header {
+            background: var(--sidebar-bg);
+            padding: 1.5rem 2rem;
+            color: var(--accent-gold);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .cheat-body {
+            padding: 2rem;
+            max-height: 70vh;
+            overflow-y: auto;
+        }
+
+        .cheat-section {
+            margin-bottom: 2rem;
+        }
+
+        .cheat-section h4 {
+            margin: 0 0 1rem;
+            color: #333;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            border-bottom: 2px solid var(--accent-gold);
+            display: inline-block;
+            padding-bottom: 4px;
+        }
+
+        .cheat-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .cheat-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid #eee;
+            font-size: 0.9rem;
+        }
+
+        .cheat-key {
+            font-weight: 700;
+            color: var(--accent-gold);
+            background: rgba(227, 168, 87, 0.1);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+
+        .cheat-key-windows {
+            font-weight: 700;
+            color: #0078d4;
+            background: rgba(0, 120, 212, 0.1);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.8rem;
+            margin-right: 4px;
+        }
+
+        .cheat-key-mac {
+            font-weight: 700;
+            color: #333;
+            background: rgba(0, 0, 0, 0.08);
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.8rem;
+        }
+
+        /* --- Usage & Analytics Styles --- */
+        .analytics-tabs {
+            display: flex;
+            gap: 2rem;
+            border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+            padding-bottom: 0.5rem;
+        }
+
+        .analytics-tab-btn {
+            background: none;
+            border: none;
+            color: #777;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            padding: 0.5rem 0.2rem;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .analytics-tab-btn:hover {
+            color: var(--text-dark);
+        }
+
+        .analytics-tab-btn.active {
+            color: var(--accent-gold);
+        }
+
+        .analytics-tab-btn.active::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: var(--accent-gold);
+            border-radius: 2px;
+        }
+
+        .sub-view-section {
+            display: none;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .sub-view-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Quotas Grid */
+        .quota-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .quota-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            border: 1px solid rgba(0,0,0,0.05);
+            transition: all 0.3s ease;
+        }
+
+        .quota-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.08);
+        }
+
+        .quota-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1rem;
+        }
+
+        .quota-title {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #555;
+        }
+
+        .quota-badge {
+            font-size: 0.75rem;
+            font-weight: 700;
+            padding: 4px 10px;
+            border-radius: 20px;
+        }
+
+        .quota-badge.healthy {
+            background: rgba(46, 213, 115, 0.1);
+            color: #2ed573;
+        }
+
+        .quota-badge.warning {
+            background: rgba(255, 71, 87, 0.1);
+            color: #ff4757;
+        }
+
+        .quota-val {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--text-dark);
+            margin-bottom: 0.5rem;
+        }
+
+        .quota-progress-container {
+            height: 8px;
+            background: #f1f2f6;
+            border-radius: 4px;
+            overflow: hidden;
+            margin-bottom: 0.8rem;
+        }
+
+        .quota-progress-bar {
+            height: 100%;
+            border-radius: 4px;
+            transition: width 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .quota-limit {
+            font-size: 0.8rem;
+            color: #777;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        /* Calculator Widget */
+        .estimator-card {
+            background: linear-gradient(135deg, #1e1e1e 0%, #2c3e50 100%);
+            color: white;
+            border-radius: 12px;
+            padding: 2.5rem;
+            box-shadow: 0 8px 30px rgba(0,0,0,0.15);
+            margin-top: 2rem;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .estimator-header h3 {
+            color: var(--accent-gold);
+            margin-top: 0;
+            margin-bottom: 0.5rem;
+            font-size: 1.4rem;
+        }
+
+        .estimator-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            margin-top: 2rem;
+        }
+
+        @media (max-width: 768px) {
+            .estimator-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+        }
+
+        .slider-group {
+            margin-bottom: 1.5rem;
+        }
+
+        .slider-group label {
+            display: flex;
+            justify-content: space-between;
+            font-weight: 600;
+            font-size: 0.9rem;
+            color: #ccc;
+            margin-bottom: 0.5rem;
+        }
+
+        .slider-group input[type="range"] {
+            -webkit-appearance: none;
+            width: 100%;
+            height: 6px;
+            background: rgba(255,255,255,0.2);
+            border-radius: 3px;
+            outline: none;
+            margin-top: 0.5rem;
+        }
+
+        .slider-group input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            background: var(--accent-gold);
+            cursor: pointer;
+            box-shadow: 0 0 10px rgba(227, 168, 87, 0.5);
+            transition: transform 0.1s;
+        }
+
+        .slider-group input[type="range"]::-webkit-slider-thumb:hover {
+            transform: scale(1.2);
+        }
+
+        .estimator-results {
+            background: rgba(0,0,0,0.3);
+            border-radius: 8px;
+            padding: 1.5rem;
+            border: 1px solid rgba(255,255,255,0.05);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .result-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.6rem 0;
+            border-bottom: 1px solid rgba(255,255,255,0.05);
+            font-size: 0.95rem;
+        }
+
+        .result-item:last-child {
+            border-bottom: none;
+        }
+
+        .result-val {
+            font-weight: 700;
+            color: var(--accent-gold);
+        }
+
+        /* KPI Banner */
+        .kpi-banner {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .kpi-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border: 1px solid rgba(0,0,0,0.05);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
+            text-align: center;
+        }
+
+        .kpi-title {
+            font-size: 0.85rem;
+            color: #777;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 0.5rem;
+        }
+
+        .kpi-value {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        /* Chart Canvas layout */
+        .charts-container {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .chart-box {
+            background: white;
+            border-radius: 12px;
+            padding: 1.8rem;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.03);
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .chart-box h3 {
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            color: var(--text-dark);
+            border-left: 4px solid var(--accent-gold);
+            padding-left: 0.5rem;
+        }
+
+        @media (max-width: 1024px) {
+            .charts-container {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Marketing Integrations */
+        .marketing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: 2rem;
+        }
+
+        .marketing-card {
+            background: white;
+            border-radius: 12px;
+            padding: 2rem;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.03);
+            border: 1px solid rgba(0,0,0,0.05);
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        .marketing-card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.2rem;
+        }
+
+        .marketing-icon-wrapper {
+            width: 48px;
+            height: 48px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+
+
+        .marketing-icon-wrapper.gsc { background: rgba(235, 94, 40, 0.1); color: #eb5e28; }
+        .marketing-icon-wrapper.ga4 { background: rgba(243, 156, 18, 0.1); color: #f39c12; }
+
+        .marketing-card h3 {
+            margin: 0;
+            font-size: 1.2rem;
+            color: var(--text-dark);
+        }
+
+        .marketing-card p {
+            font-size: 0.9rem;
+            color: #666;
+            line-height: 1.5;
+            margin-top: 0;
+            margin-bottom: 1.5rem;
+        }
+
+        .code-box-wrapper {
+            background: #1e1e1e;
+            border-radius: 8px;
+            padding: 1rem;
+            position: relative;
+            margin-bottom: 1.5rem;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+
+        .code-box-wrapper pre {
+            margin: 0;
+            color: #a9b7c6;
+            font-family: monospace;
+            font-size: 0.75rem;
+            overflow-x: auto;
+        }
+
+        .copy-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: rgba(255,255,255,0.1);
+            border: none;
+            color: #eee;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .copy-btn:hover {
+            background: rgba(255,255,255,0.2);
+            color: white;
+        }
+
+        .info-icon {
+            font-size: 0.85rem;
+            color: #a0a0a0;
+            margin-left: 6px;
+            cursor: help;
+            transition: color 0.2s;
+        }
+        .info-icon:hover {
+            color: var(--accent-gold);
+        }
+    </style>
+</head>
+<body>
+    <!-- Mobile Toggle -->
+    <button class="mobile-toggle" id="mobile-sidebar-toggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <div id="login-screen" style="display: flex; align-items: center; justify-content: center; min-height: 100vh; background: #1a1a1a;">
+        <div class="modal-card">
+            <h2 style="margin-bottom: 0.5rem;">Admin Access</h2>
+            <p style="opacity: 0.7; margin-bottom: 2rem;">Dean McGregor Safaris Portal</p>
+            <p id="auth-error" style="color: #ff6b6b; display: none; margin-bottom: 1rem;"></p>
+            <form id="email-login-form">
+                <div class="form-group">
+                    <input type="email" id="email-input" placeholder="Admin Email" required>
+                </div>
+                <div class="form-group">
+                    <input type="password" id="password-input" placeholder="Password" required>
+                </div>
+                <button type="submit" class="btn-primary" style="width: 100%;">Sign In</button>
+            </form>
+        </div>
+    </div>
+
+    <div id="admin-layout" class="admin-layout" style="display: none;">
+        <!-- Left Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-brand">
+                DEAN McGREGOR <br>
+                <span style="font-weight: 300; font-size: 0.8rem;">ADMIN PORTAL</span>
+            </div>
+
+            <nav class="nav-menu">
+                <a class="nav-link active" data-target="section-admin-users">
+                    <i class="fas fa-users-cog"></i> Admin Managers
+                </a>
+                <a class="nav-link" data-target="section-analytics">
+                    <i class="fas fa-chart-line"></i> Usage & Analytics
+                </a>
+                <a class="nav-link" data-target="section-settings">
+                    <i class="fas fa-cog"></i> Site Settings
+                </a>
+                <a class="nav-link" data-target="section-guide">
+                    <i class="fas fa-user-tie"></i> Guide Profile
+                </a>
+                <a class="nav-link" data-target="section-operations">
+                    <i class="fas fa-map-marked-alt"></i> Operations
+                </a>
+                <a class="nav-link" data-target="section-portal-canvas">
+                    <i class="fas fa-th-large"></i> Galleries Overview Editor
+                </a>
+                <a class="nav-link" data-target="section-gallery">
+                    <i class="fas fa-images"></i> Gallery Collections Manager
+                </a>
+                <a class="nav-link" data-target="section-home-carousel">
+                    <i class="fas fa-play-circle"></i> Home Carousel
+                </a>
+                <a class="nav-link" data-target="section-testimonials">
+                    <i class="fas fa-quote-left"></i> Testimonials
+                </a>
+                <a class="nav-link" data-target="section-acknowledgements">
+                    <i class="fas fa-award"></i> Acknowledgements
+                </a>
+            </nav>
+
+            <div class="sidebar-bottom">
+                <button class="btn-primary" id="btn-back-to-site" style="width: 100%; padding: 0.8rem;">
+                    <i class="fas fa-external-link-alt"></i> Back to Site
+                </button>
+                <a class="logout-link" id="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </div>
+        </aside>
+
+        <!-- Dynamic Content Area -->
+        <main class="main-content">
+            
+            <!-- Section: Site Settings -->
+            <section id="section-settings" class="view-section">
+                <div class="section-header">
+                    <h1>Site Settings</h1>
+                </div>
+                <div class="glass-card">
+                    <h3 style="margin-bottom: 2rem;">Contact & Social Media</h3>
+                    <form id="settings-form">
+                        <div class="form-group">
+                            <label>Admin Email</label>
+                            <input type="email" id="set-email" required>
+                        </div>
+                        <div class="form-group">
+                            <label>WhatsApp Number (Display)</label>
+                            <input type="text" id="set-wa" required>
+                        </div>
+                        <div class="form-group">
+                            <label>WhatsApp Link Number (Digits Only)</label>
+                            <input type="text" id="set-walink" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Business Address</label>
+                            <input type="text" id="set-address" placeholder="e.g. Plot 141 Monde Village, Victoria Falls, Zimbabwe." value="Plot 141 Monde Village, Victoria Falls, Zimbabwe." required>
+                        </div>
+                        <button type="submit" class="btn-primary" style="margin-top: 1rem;">Update Website Settings</button>
+                    </form>
+                </div>
+                
+                <div class="glass-card" style="margin-top: 2rem;">
+                    <h3 style="margin-bottom: 1rem;">Privacy &amp; Data Protection Policy</h3>
+                    
+                    <!-- Educational Compliance Info Banner -->
+                    <div style="background: rgba(227, 168, 87, 0.05); border: 1px solid rgba(227, 168, 87, 0.2); padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem; font-size: 0.9rem; line-height: 1.5; color: #555;">
+                        <h4 style="margin-top: 0; color: #c8963e; font-size: 1rem; display: flex; align-items: center; gap: 8px;">
+                            <i class="fas fa-balance-scale"></i> Zimbabwean Data Protection Guidelines
+                        </h4>
+                        <p style="margin: 0.5rem 0;">Under Zimbabwe's <strong>Cyber Security and Data Protection Act [Chapter 12:07]</strong>, organizations must implement <em>Privacy by Design</em>. As a safari operator collecting guest details (such as names, passport details, and health constraints), you should review and update this policy annually or whenever your operational storage practices change.</p>
+                        <p style="margin: 0.5rem 0 0 0;"><strong>Key Regulatory Resource:</strong> You can check official compliance directives and updates on the <a href="https://www.potraz.gov.zw" target="_blank" style="color: var(--accent-gold); font-weight: 600; text-decoration: none;">POTRAZ Website (potraz.gov.zw)</a>—Zimbabwe's designated Data Protection Authority.</p>
+                    </div>
+                    
+                    <!-- Privacy Policy Form -->
+                    <form id="privacy-form">
+                        <div class="form-group">
+                            <label>Data Minimization Policy Title</label>
+                            <input type="text" id="privacy-minimization-title" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Data Minimization Policy Content</label>
+                            <textarea id="privacy-minimization-content" rows="3" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Right to be Forgotten Title</label>
+                            <input type="text" id="privacy-forgotten-title" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Right to be Forgotten Content</label>
+                            <textarea id="privacy-forgotten-content" rows="3" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Cookie Policy Title</label>
+                            <input type="text" id="privacy-cookie-title" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Cookie Policy Content</label>
+                            <textarea id="privacy-cookie-content" rows="3" required></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Governing Law Title</label>
+                            <input type="text" id="privacy-governing-title" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Governing Law Content</label>
+                            <textarea id="privacy-governing-content" rows="3" required></textarea>
+                        </div>
+                        <button type="submit" class="btn-primary" style="margin-top: 1rem;">Update Privacy Policy</button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Section: Usage & Analytics -->
+            <section id="section-analytics" class="view-section">
+                <div class="section-header">
+                    <h1>Usage & Analytics</h1>
+                    <p>Track your platform resource usage, evaluate traffic metrics, and integrate free marketing tools.</p>
+                </div>
+
+                <!-- Sub-tab Navigation -->
+                <div class="analytics-tabs">
+                    <button class="analytics-tab-btn active" data-subtarget="sub-usage">
+                        <i class="fas fa-server"></i> Resource Quotas
+                    </button>
+                    <button class="analytics-tab-btn" data-subtarget="sub-charts">
+                        <i class="fas fa-chart-bar"></i> Traffic & Interactions
+                    </button>
+                    <button class="analytics-tab-btn" data-subtarget="sub-marketing">
+                        <i class="fas fa-bullhorn"></i> Zero-Cost Marketing
+                    </button>
+                </div>
+
+                <!-- Sub-section: Resource Quotas -->
+                <div id="sub-usage" class="sub-view-section active">
+                    <div class="quota-grid">
+                        <!-- Firestore Reads -->
+                        <div class="quota-card">
+                            <div class="quota-header">
+                                <span class="quota-title">Firestore Database Reads <i class="fas fa-info-circle info-icon" title="Every time a visitor loads a page, the website looks up the text and settings from your database. That's a Read! You get 50,000 lookup operations completely FREE every day. We are showing your Today's Total Reads across the entire platform."></i></span>
+                                <div style="display: flex; gap: 0.5rem; align-items: center;">
+                                    <span class="quota-badge healthy" id="q-reads-status-badge">HEALTHY</span>
+                                    <span class="quota-badge" id="btn-refresh-reads" style="cursor: pointer; background: rgba(227, 168, 87, 0.15); color: var(--accent-gold); border: 1px solid rgba(227, 168, 87, 0.3); padding: 2px 8px; border-radius: 12px; display: inline-flex; align-items: center; gap: 4px; font-weight: 600; font-size: 0.7rem; transition: all 0.2s;" onmouseover="this.style.background='var(--accent-gold)'; this.style.color='#000'" onmouseout="this.style.background='rgba(227, 168, 87, 0.15)'; this.style.color='var(--accent-gold)'">
+                                        <i class="fas fa-sync-alt" id="reads-refresh-icon"></i> REFRESH
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="quota-val" id="q-reads-val">0</div>
+                            <div class="quota-progress-container">
+                                <div class="quota-progress-bar" id="q-reads-bar" style="width: 0%; background: var(--accent-gold);"></div>
+                            </div>
+                            <div class="quota-limit" id="q-reads-desc">
+                                <span>Today's Total Reads: 0</span>
+                                <span>Limit: 50,000 / day</span>
+                            </div>
+                        </div>
+
+                        <!-- Firestore Writes -->
+                        <div class="quota-card">
+                            <div class="quota-header">
+                                <span class="quota-title">Firestore Database Writes <i class="fas fa-info-circle info-icon" title="When edits are saved, settings are updated in your database. That's a Write! You get 20,000 FREE database saves every single day. We are showing your Today's Total Writes across the entire platform."></i></span>
+                                <div style="display: flex; gap: 0.5rem; align-items: center;">
+                                    <span class="quota-badge healthy" id="q-writes-status-badge">HEALTHY</span>
+                                    <span class="quota-badge" id="btn-refresh-writes" style="cursor: pointer; background: rgba(227, 168, 87, 0.15); color: var(--accent-gold); border: 1px solid rgba(227, 168, 87, 0.3); padding: 2px 8px; border-radius: 12px; display: inline-flex; align-items: center; gap: 4px; font-weight: 600; font-size: 0.7rem; transition: all 0.2s;" onmouseover="this.style.background='var(--accent-gold)'; this.style.color='#000'" onmouseout="this.style.background='rgba(227, 168, 87, 0.15)'; this.style.color='var(--accent-gold)'">
+                                        <i class="fas fa-sync-alt" id="writes-refresh-icon"></i> REFRESH
+                                    </span>
+                                </div>
+                            </div>
+                            <div class="quota-val" id="q-writes-val">0</div>
+                            <div class="quota-progress-container">
+                                <div class="quota-progress-bar" id="q-writes-bar" style="width: 0%; background: var(--accent-gold);"></div>
+                            </div>
+                            <div class="quota-limit" id="q-writes-desc">
+                                <span>Today's Total Writes: 0</span>
+                                <span>Limit: 20,000 / day</span>
+                            </div>
+                        </div>
+
+                        <!-- Storage Capacity -->
+                        <div class="quota-card">
+                            <div class="quota-header">
+                                <span class="quota-title">Cloud Storage Space <i class="fas fa-info-circle info-icon" title="This is the total storage space used by all the photos you upload for your galleries, safari cover images, and park headers. You have a massive 5.0 GB of photo storage completely FREE. Calculations are done automatically on every upload and delete event."></i></span>
+                                <span class="quota-badge healthy" id="q-storage-status-badge">HEALTHY</span>
+                            </div>
+                            <div class="quota-val" id="q-storage-val">-- MB</div>
+                            <div class="quota-progress-container">
+                                <div class="quota-progress-bar" id="q-storage-bar" style="width: 0%; background: var(--accent-gold);"></div>
+                            </div>
+                            <div class="quota-limit" id="q-storage-desc">
+                                <span>Capacity: --%</span>
+                                <span>Limit: 5.0 GB</span>
+                            </div>
+                        </div>
+
+                        <!-- Hosting Data Storage -->
+                        <div class="quota-card">
+                            <div class="quota-header">
+                                <span class="quota-title">Firebase Hosting Space <i class="fas fa-info-circle info-icon" title="This is the space taken up by your actual website files (your pages, text code, styling, and structural files). You have 10.0 GB of FREE hosting code space. This checks the server size live and stays accurate as your site code develops!"></i></span>
+                                <span class="quota-badge healthy">HEALTHY</span>
+                            </div>
+                            <div class="quota-val" id="q-host-space-val">-- MB</div>
+                            <div class="quota-progress-container">
+                                <div class="quota-progress-bar" id="q-host-space-bar" style="width: 0%; background: var(--accent-gold);"></div>
+                            </div>
+                            <div class="quota-limit" id="q-host-space-desc">
+                                <span>Capacity: --%</span>
+                                <span>Limit: 10 GB</span>
+                            </div>
+                        </div>
+
+                        <!-- Hosting Outbound Transfer -->
+                        <div class="quota-card">
+                            <div class="quota-header">
+                                <span class="quota-title">Hosting Outbound Transfer <i class="fas fa-info-circle info-icon" title="This is the data (internet bandwidth) used when visitors load your site. It is the weight of the pages and photos sent from the server to their phones or laptops. You get a massive 10.0 GB of FREE data transfer every month (approx. 360 MB per day). This is calculated live based on your real daily visitors!"></i></span>
+                                <span class="quota-badge healthy">HEALTHY</span>
+                            </div>
+                            <div class="quota-val" id="q-host-trans-val">-- MB</div>
+                            <div class="quota-progress-container">
+                                <div class="quota-progress-bar" id="q-host-trans-bar" style="width: 0%; background: var(--accent-gold);"></div>
+                            </div>
+                            <div class="quota-limit" id="q-host-trans-desc">
+                                <span>Used Today: --%</span>
+                                <span>Limit: 360 MB / day</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Interactive Quota Estimator / Spark Tier Advisor -->
+                    <div class="estimator-card">
+                        <div class="estimator-header">
+                            <h3><i class="fas fa-calculator"></i> Spark Free Tier Growth & Capacity Estimator</h3>
+                            <p style="color: #bbb; margin: 0; font-size: 0.9rem;">Simulate website traffic expansion to see how long you can remain on Firebase's 100% free Spark tier.</p>
+                        </div>
+                        
+                        <div class="estimator-grid">
+                            <div>
+                                <div class="slider-group">
+                                    <label>
+                                        <span>Estimated Daily Visitors</span>
+                                        <span id="slider-visitors-val" style="color: var(--accent-gold); font-weight: 700;">100</span>
+                                    </label>
+                                    <input type="range" id="slider-visitors" min="10" max="2500" step="10" value="100">
+                                </div>
+                                <div class="slider-group">
+                                    <label>
+                                        <span>Average Pages Clicked per Visitor</span>
+                                        <span id="slider-views-val" style="color: var(--accent-gold); font-weight: 700;">5</span>
+                                    </label>
+                                    <input type="range" id="slider-views" min="1" max="20" step="1" value="5">
+                                </div>
+                            </div>
+
+                            <div class="estimator-results">
+                                <div>
+                                    <div class="result-item">
+                                        <span>Estimated Monthly Pageviews</span>
+                                        <span class="result-val" id="res-pageviews">15,000</span>
+                                    </div>
+                                    <div class="result-item">
+                                        <span>Est. Daily Firestore Reads (approx)</span>
+                                        <span class="result-val" id="res-reads">800 / 50k</span>
+                                    </div>
+                                    <div class="result-item">
+                                        <span>Est. Daily Outbound Bandwidth (approx)</span>
+                                        <span class="result-val" id="res-bandwidth">75 MB / 360MB</span>
+                                    </div>
+                                </div>
+                                <div style="margin-top: 1rem; padding-top: 1rem; border-top: 1px solid rgba(255,255,255,0.1); display: flex; align-items: center; justify-content: space-between;">
+                                    <span style="font-weight: 600; font-size: 0.9rem; color: #eee;">Tier Recommendation:</span>
+                                    <span id="estimator-rec-badge" style="background: #2ed573; color: white; padding: 4px 12px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; letter-spacing: 0.5px;">100% FREE FOREVER</span>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sub-section: Traffic & Interactions -->
+                <div id="sub-charts" class="sub-view-section">
+                    <!-- Toggle Controls -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem; gap: 1rem; flex-wrap: wrap; border-bottom: 1px solid rgba(255,255,255,0.06); padding-bottom: 1rem;">
+                        <div style="display: flex; gap: 4px; background: rgba(0,0,0,0.25); padding: 4px; border-radius: 8px; border: 1px solid rgba(255,255,255,0.06);">
+                            <button id="btn-toggle-live" class="analytics-toggle-btn active" style="background: var(--accent-gold); color: #000; border: none; padding: 8px 16px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: all 0.2s; display: flex; align-items: center; gap: 6px;">
+                                <i class="fas fa-signal"></i> Live Tracking Stream
+                            </button>
+                            <button id="btn-toggle-mock" class="analytics-toggle-btn" style="background: transparent; color: #fff; border: none; padding: 8px 16px; border-radius: 6px; font-size: 0.75rem; font-weight: 700; cursor: pointer; transition: all 0.2s; opacity: 0.6; display: flex; align-items: center; gap: 6px;">
+                                <i class="fas fa-magic"></i> Simulated Projections
+                            </button>
+                        </div>
+                        <a href="https://deansafaris.goatcounter.com" target="_blank" style="font-size: 0.75rem; padding: 8px 16px; text-decoration: none; border-radius: 6px; display: inline-flex; align-items: center; gap: 6px; height: fit-content; background: rgba(227, 168, 87, 0.08); border: 1px solid var(--accent-gold); color: var(--accent-gold); font-weight: 600; transition: all 0.2s;">
+                            <i class="fas fa-external-link-alt"></i> Launch External Portal
+                        </a>
+                    </div>
+
+                    <!-- VIEW 1: Live Stats Embedded Frame (Default) -->
+                    <div id="live-stats-view" style="display: block; width: 100%;">
+                        <div style="background: rgba(255, 255, 255, 0.02); border-radius: 12px; border: 1px solid rgba(255,255,255,0.06); padding: 1.5rem; display: flex; flex-direction: column; gap: 1rem; align-items: center; text-align: center; margin-bottom: 1.5rem; backdrop-filter: blur(10px);">
+                            <div style="max-width: 650px;">
+                                <h3 style="margin-top: 0; color: var(--accent-gold); font-size: 1.1rem; display: flex; align-items: center; justify-content: center; gap: 0.6rem; font-family: 'Outfit', sans-serif;"><i class="fas fa-satellite-dish" style="animation: pulse 2s infinite;"></i> Real-Time Dashboard</h3>
+                                <p style="color: #bbb; font-size: 0.85rem; margin: 0.5rem 0 1rem 0; line-height: 1.4;">Below is your live GoatCounter traffic monitor. To see stats directly inside this window without needing to log in, go to your GoatCounter <strong>Settings ➔ Sites</strong> and set <strong>"Dashboard viewable by"</strong> to <strong>"Anyone (public)"</strong>.</p>
+                            </div>
+                            <div style="width: 100%; height: 680px; border-radius: 10px; overflow: hidden; border: 1px solid rgba(255,255,255,0.1); background: #0c0d0e; box-shadow: inset 0 4px 20px rgba(0,0,0,0.6);">
+                                <iframe id="iframe-goatcounter" src="https://deansafaris.goatcounter.com" style="width: 100%; height: 100%; border: none;" title="Live GoatCounter Analytics"></iframe>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- VIEW 2: Mock/Simulated Forecasts -->
+                    <div id="mock-stats-view" style="display: none; width: 100%;">
+                        <!-- KPI Scoreboard -->
+                        <div class="kpi-banner">
+                            <div class="kpi-card">
+                                <div class="kpi-title">Monthly Unique Visitors</div>
+                                <div class="kpi-value" id="kpi-visitors">1,420</div>
+                            </div>
+                            <div class="kpi-card">
+                                <div class="kpi-title">WhatsApp & Social Enquiries</div>
+                                <div class="kpi-value" id="kpi-enquiries">84</div>
+                            </div>
+                            <div class="kpi-card">
+                                <div class="kpi-title">Engagement Conversion Rate</div>
+                                <div class="kpi-value" id="kpi-conv">5.9%</div>
+                            </div>
+                            <div class="kpi-card">
+                                <div class="kpi-title">Avg. Session Duration</div>
+                                <div class="kpi-value" id="kpi-time">2m 45s</div>
+                            </div>
+                        </div>
+
+                        <!-- Charts Visual Grid -->
+                        <div class="charts-container">
+                            <!-- Traffic Line Chart -->
+                            <div class="chart-box">
+                                <h3>Daily Website Traffic Trends</h3>
+                                <div style="position: relative; height: 320px; width: 100%;">
+                                    <canvas id="chart-traffic"></canvas>
+                                </div>
+                            </div>
+                            
+                            <!-- Device breakdown -->
+                            <div class="chart-box">
+                                <h3>Visitor Devices</h3>
+                                <div style="position: relative; height: 320px; width: 100%; display: flex; align-items: center; justify-content: center;">
+                                    <canvas id="chart-devices"></canvas>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="charts-container" style="grid-template-columns: 1fr;">
+                            <!-- Interactions Bar Chart -->
+                            <div class="chart-box">
+                                <h3>Marketing Interaction Funnel (Call to Action Conversions)</h3>
+                                <div style="position: relative; height: 280px; width: 100%;">
+                                    <canvas id="chart-interactions"></canvas>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sub-section: Zero-Cost Marketing -->
+                <div id="sub-marketing" class="sub-view-section">
+                    <div class="marketing-grid">
+
+                        <!-- Google Search Console -->
+                        <div class="marketing-card">
+                            <div>
+                                <div class="marketing-card-header">
+                                    <div class="marketing-icon-wrapper gsc">
+                                        <i class="fas fa-search"></i>
+                                    </div>
+                                    <div>
+                                        <h3>Google Search Console</h3>
+                                        <span style="font-size: 0.75rem; font-weight: 700; color: #eb5e28; background: rgba(235, 94, 40, 0.1); padding: 2px 8px; border-radius: 4px;">GOOGLE OFFICIAL (FREE)</span>
+                                    </div>
+                                </div>
+                                <p>Direct organic marketing tool. See which safari-related Google search terms bring visitors to Dean's site, audit mobile indexing issues, and monitor impressions and organic click-through rates.</p>
+                                
+                                <div style="background: #f8f9fa; border-radius: 8px; padding: 1rem; border: 1px solid #eee; font-size: 0.8rem; color: #555; margin-bottom: 1.5rem;">
+                                    <h4 style="margin: 0 0 0.5rem; color: var(--text-dark); font-size: 0.85rem;"><i class="fas fa-list-ol"></i> Step-by-Step DNS Verification:</h4>
+                                    <ol style="margin: 0; padding-left: 1.2rem; line-height: 1.5;">
+                                        <li>Register site domain at Search Console.</li>
+                                        <li>Copy the custom Google DNS TXT verification key.</li>
+                                        <li>Add TXT key into your Domain Registrar (DNS).</li>
+                                        <li>Click Verify inside the Google dashboard!</li>
+                                    </ol>
+                                </div>
+                            </div>
+                            <div style="border-top: 1px solid #eee; padding-top: 1rem; text-align: right;">
+                                <a href="https://search.google.com/search-console/about" target="_blank" class="btn-primary" style="font-size: 0.8rem; padding: 0.6rem 1.2rem; text-decoration: none; display: inline-block;">Access Search Console</a>
+                            </div>
+                        </div>
+
+                        <!-- Google Analytics 4 -->
+                        <div class="marketing-card">
+                            <div>
+                                <div class="marketing-card-header">
+                                    <div class="marketing-icon-wrapper ga4">
+                                        <i class="fas fa-globe"></i>
+                                    </div>
+                                    <div>
+                                        <h3>Google Analytics 4 (GA4)</h3>
+                                        <span style="font-size: 0.75rem; font-weight: 700; color: #f39c12; background: rgba(243, 156, 18, 0.1); padding: 2px 8px; border-radius: 4px;">INDUSTRY STANDARD (FREE)</span>
+                                    </div>
+                                </div>
+                                <p>Track detailed acquisition sources: let Dean know if clients come from Instagram marketing, Facebook, or organic search engine referrals. Build target maps of geographic viewer locations.</p>
+                                
+                                <div class="code-box-wrapper">
+                                    <button class="copy-btn" onclick="copyMarketingCode('ga4-code', this)">Copy Code</button>
+                                    <pre id="ga4-code">&lt;!-- Global site tag (gtag.js) - Google Analytics --&gt;
+&lt;script async src="https://www.googletagmanager.com/gtag/js?id=G-DEANSAFARIS"&gt;&lt;/script&gt;
+&lt;script&gt;
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-DEANSAFARIS');
+&lt;/script&gt;</pre>
+                                </div>
+                            </div>
+                            <div style="border-top: 1px solid #eee; padding-top: 1rem; text-align: right;">
+                                <a href="https://analytics.google.com/" target="_blank" class="btn-primary" style="font-size: 0.8rem; padding: 0.6rem 1.2rem; text-decoration: none; display: inline-block;">Get Google Analytics Tag</a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Guide Profile -->
+            <section id="section-guide" class="view-section">
+                <div class="section-header">
+                    <h1>Guide Profile Manager</h1>
+                    <p>Manage Dean's biography, expertise tags, and profile images.</p>
+                </div>
+
+                <div class="glass-card">
+                    <form id="guide-profile-form">
+                        <div class="form-group">
+                            <label>Introduction Title (Optional)</label>
+                            <input type="text" id="guide-intro-title" placeholder="e.g. Meet Dean McGregor">
+                        </div>
+
+                        <div class="form-group" style="margin-top: 1.5rem;">
+                            <label>Introduction Biography</label>
+                            <textarea id="guide-intro-input" rows="8" placeholder="e.g. Dean McGregor is an experienced Zimbabwean Professional Guide..."></textarea>
+
+
+                        </div>
+
+                        <hr style="border: 0; border-top: 1px solid var(--glass-border); margin: 2rem 0;">
+                        <h3 style="font-family: var(--font-primary); font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; color: var(--earthy-khaki); margin-bottom: 1.5rem;">Key Facts (Sidebar)</h3>
+                        
+                        <div id="dynamic-key-facts" style="margin-bottom: 1rem;">
+                            <!-- Key facts (Profession, Location, etc.) injected here -->
+                        </div>
+
+
+                        <button type="button" id="add-key-fact-btn" class="btn-secondary" style="width: 100%; margin-bottom: 2rem; padding: 0.75rem; border: 1px dashed var(--glass-border); background: transparent; color: var(--earthy-khaki); font-size: 0.85rem; cursor: pointer;">
+                            + Add Key Fact Item
+                        </button>
+
+                        <hr style="border: 0; border-top: 1px solid var(--glass-border); margin: 2rem 0;">
+                        <h3 style="font-family: var(--font-primary); font-size: 1rem; text-transform: uppercase; letter-spacing: 1px; color: var(--earthy-khaki); margin-bottom: 1.5rem;">Biography Sections</h3>
+
+                        <div id="dynamic-bio-sections">
+                            <!-- Fixed Sections with Editable Titles -->
+                            <div class="bio-section-group" style="margin-bottom: 2rem; padding: 1.5rem; background: rgba(0,0,0,0.02); border-radius: 8px;">
+                                <div class="form-group">
+                                    <label>Section Title</label>
+                                    <input type="text" id="guide-career-title" placeholder="e.g. Career & Guiding Work">
+                                </div>
+                                <div class="form-group">
+                                    <label>Content</label>
+                                    <textarea id="guide-career-input" rows="6"></textarea>
+
+
+                                </div>
+                            </div>
+
+                            <div class="bio-section-group" style="margin-bottom: 2rem; padding: 1.5rem; background: rgba(0,0,0,0.02); border-radius: 8px;">
+                                <div class="form-group">
+                                    <label>Section Title</label>
+                                    <input type="text" id="guide-conservation-title" placeholder="e.g. Conservation & Philosophy">
+                                </div>
+                                <div class="form-group">
+                                    <label>Content</label>
+                                    <textarea id="guide-conservation-input" rows="6"></textarea>
+
+
+                                </div>
+                            </div>
+
+                            <div class="bio-section-group" style="margin-bottom: 2rem; padding: 1.5rem; background: rgba(0,0,0,0.02); border-radius: 8px;">
+                                <div class="form-group">
+                                    <label>Section Title</label>
+                                    <input type="text" id="guide-recognition-title" placeholder="e.g. Recognition & Influence">
+                                </div>
+                                <div class="form-group">
+                                    <label>Content</label>
+                                    <textarea id="guide-recognition-input" rows="6"></textarea>
+
+
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Custom Sections Container -->
+                        <div id="custom-bio-sections"></div>
+
+                        <button type="button" id="add-bio-section-btn" class="btn-secondary" style="width: 100%; margin-bottom: 2rem; padding: 1rem; border: 2px dashed var(--glass-border); background: transparent; color: var(--earthy-khaki); font-weight: 600; cursor: pointer;">
+                            + Add Custom Biography Section
+                        </button>
+
+                        <div class="form-group">
+                        <div class="guide-image-grid" style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1.5rem; margin-top: 2rem;">
+                            <!-- Slot 1: Hero -->
+                            <div class="image-slot">
+                                <label style="font-size: 0.8rem; opacity: 0.8; margin-bottom: 0.5rem; display: block;">Hero Image (Top Banner)</label>
+                                <div id="guide-hero-preview" class="image-slot-preview" style="height: 120px; background: rgba(0,0,0,0.2); border-radius: 8px; margin-bottom: 0.5rem; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid var(--glass-border);">
+                                    <span style="opacity: 0.3;">No Image</span>
+                                </div>
+                                <input type="file" id="guide-hero-input" accept="image/*" style="display: none;">
+                                <button type="button" onclick="document.getElementById('guide-hero-input').click()" class="btn-primary btn-small" style="width: 100%; font-size: 0.7rem; background: #666;">Change Hero</button>
+                            </div>
+
+                            <!-- Slot 2: Triptych Left -->
+                            <div class="image-slot">
+                                <label style="font-size: 0.8rem; opacity: 0.8; margin-bottom: 0.5rem; display: block;">Triptych Left Image</label>
+                                <div id="guide-img-0-preview" class="image-slot-preview" style="height: 120px; background: rgba(0,0,0,0.2); border-radius: 8px; margin-bottom: 0.5rem; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid var(--glass-border);">
+                                    <span style="opacity: 0.3;">No Image</span>
+                                </div>
+                                <input type="file" id="guide-img-0-input" accept="image/*" style="display: none;">
+                                <button type="button" onclick="document.getElementById('guide-img-0-input').click()" class="btn-primary btn-small" style="width: 100%; font-size: 0.7rem; background: #666;">Change Left</button>
+                            </div>
+
+                            <!-- Slot 3: Triptych Right -->
+                            <div class="image-slot">
+                                <label style="font-size: 0.8rem; opacity: 0.8; margin-bottom: 0.5rem; display: block;">Triptych Right Image</label>
+                                <div id="guide-img-1-preview" class="image-slot-preview" style="height: 120px; background: rgba(0,0,0,0.2); border-radius: 8px; margin-bottom: 0.5rem; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid var(--glass-border);">
+                                    <span style="opacity: 0.3;">No Image</span>
+                                </div>
+                                <input type="file" id="guide-img-1-input" accept="image/*" style="display: none;">
+                                <button type="button" onclick="document.getElementById('guide-img-1-input').click()" class="btn-primary btn-small" style="width: 100%; font-size: 0.7rem; background: #666;">Change Right</button>
+                            </div>
+
+                            <!-- Slot 4: Diptych Bottom -->
+                            <div class="image-slot">
+                                <label style="font-size: 0.8rem; opacity: 0.8; margin-bottom: 0.5rem; display: block;">Bottom Diptych Image</label>
+                                <div id="guide-img-2-preview" class="image-slot-preview" style="height: 120px; background: rgba(0,0,0,0.2); border-radius: 8px; margin-bottom: 0.5rem; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px solid var(--glass-border);">
+                                    <span style="opacity: 0.3;">No Image</span>
+                                </div>
+                                <input type="file" id="guide-img-2-input" accept="image/*" style="display: none;">
+                                <button type="button" onclick="document.getElementById('guide-img-2-input').click()" class="btn-primary btn-small" style="width: 100%; font-size: 0.7rem; background: #666;">Change Bottom</button>
+                            </div>
+                        </div>
+
+
+                        <div style="margin-top: 2rem;">
+                            <div class="form-group">
+                            <label>Footer Text Box (Quote Strip)</label>
+                            <textarea id="guide-footer-quote-input" rows="3" placeholder="e.g. Expert guidance for your next wilderness expedition..."></textarea>
+                        </div>
+
+                        <button type="submit" class="btn-primary" style="padding: 1rem;">Save Profile Updates</button>
+                        </div>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Section: Safaris Overhaul -->
+            <section id="section-operations" class="view-section">
+                <div class="section-header" style="display: flex; align-items: center; gap: 1rem;">
+                    <h1>Safaris Management</h1>
+                    <span id="operations-unsaved-badge" style="display: none; background: #ff4757; color: white; padding: 0.3rem 0.8rem; border-radius: 50px; font-size: 0.75rem; font-weight: 600; animation: pulse 2s infinite;">Unsaved Changes</span>
+                </div>
+
+                <!-- Main Page Gateway Panel -->
+                <div class="glass-card" style="margin-bottom: 3rem;">
+                    <h3 style="font-family: var(--font-primary); font-size: 1.2rem; color: var(--earthy-khaki); margin-bottom: 1.5rem;">Operations Main Page Panel Design</h3>
+                    <p style="font-size: 0.85rem; opacity: 0.7; margin-bottom: 1.5rem;">This tool designs the singular large panel on the Home page that leads to the Safaris section.</p>
+                    <form id="safari-panel-form">
+                        <div class="form-group">
+                            <label>Panel Title</label>
+                            <input type="text" id="panel-title" placeholder="e.g. Bespoke Safari Expeditions">
+                        </div>
+                        <div class="form-group">
+                            <label>Panel Description</label>
+                            <textarea id="panel-desc" rows="3" placeholder="Enter a compelling description..."></textarea>
+
+
+                        </div>
+                        <div class="form-group">
+                            <label>Background Image</label>
+                            <input type="file" id="panel-image" accept="image/*">
+                            <input type="hidden" id="panel-image-url">
+                            <div id="panel-image-preview" style="margin-top: 1rem; height: 200px; background: rgba(0,0,0,0.05); border-radius: 8px; display: flex; align-items: center; justify-content: center; overflow: hidden; border: 1px dashed var(--glass-border);">
+                                <span style="opacity: 0.4;">No image uploaded</span>
+                            </div>
+                        </div>
+                        <button type="submit" class="btn-primary" style="padding: 0.8rem 2rem;">Save & Update Website (Main Panel)</button>
+                    </form>
+                </div>
+                
+                <div class="glass-card" style="margin-bottom: 3rem;">
+                    <h3 style="font-family: var(--font-primary); font-size: 1.2rem; color: var(--earthy-khaki); margin-bottom: 2rem;">1. Main Intro</h3>
+                    <form id="safari-intro-form">
+                        <div class="form-group">
+                            <label>Intro Text (Inside Brackets)</label>
+                            <textarea id="safari-intro-text" rows="4" placeholder="Enter main intro..."></textarea>
+                            <span class="field-tip"><i class="fas fa-keyboard"></i> Use **text** for bold. Press <strong>Ctrl+I</strong> (or Cmd+I) with text selected to wrap in footnote/fine-print styling.</span>
+
+                        </div>
+                        <button type="submit" class="btn-primary" style="padding: 0.8rem 2rem;">Save & Update Website</button>
+                    </form>
+                </div>
+
+                <div class="glass-card" style="margin-bottom: 3rem;">
+                    <h3 style="font-family: var(--font-primary); font-size: 1.2rem; color: var(--earthy-khaki); margin-bottom: 2rem;">2. Seasonal Schematics</h3>
+                    <div id="schematic-editors-container" style="display: grid; gap: 3rem;">
+                        <!-- Dynamically generated for Hwange, Gonarezhou, Mana Pools, Zambezi -->
+                    </div>
+                    <div style="margin-top: 3rem; text-align: center;">
+                        <button id="btn-save-all-schematics" class="btn-primary" style="padding: 1rem 3rem;">Save & Update Website (All Schematics)</button>
+                    </div>
+                </div>
+
+                <div class="glass-card" style="margin-bottom: 3rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                        <h3 style="font-family: var(--font-primary); font-size: 1.2rem; color: var(--earthy-khaki); margin: 0;">3. Park Information & Photos</h3>
+                        <button type="button" id="btn-add-park" class="btn-primary" style="background: var(--sunset-gold); font-size: 0.8rem; padding: 6px 15px;">+ Add New Park</button>
+                    </div>
+                    <div id="park-info-editors-container" style="display: grid; gap: 4rem;">
+                        <!-- Dynamically generated for the 4 parks -->
+                    </div>
+                    <div style="margin-top: 4rem; text-align: center;">
+                        <button id="btn-save-all-park-info" class="btn-primary" style="padding: 1rem 3rem;">Save & Update Website (All Park Info)</button>
+                    </div>
+                </div>
+
+                <div class="glass-card" style="margin-bottom: 3rem;">
+                    <h3 style="font-family: var(--font-primary); font-size: 1.2rem; color: var(--earthy-khaki); margin-bottom: 2rem;">4. Travel & Access Info</h3>
+                    <p style="font-size: 0.85rem; opacity: 0.7; margin-bottom: 1.5rem;">This section appears at the very bottom of the Safaris page with a full-bleed background.</p>
+                    <form id="safari-travel-form">
+                        <div class="form-group">
+                            <label>Title</label>
+                            <input type="text" id="travel-title" placeholder="e.g. TRAVEL & ACCESS INFO">
+                        </div>
+                        <div class="form-group">
+                            <label>Content (One bullet per line)</label>
+                            <textarea id="travel-content" rows="8" placeholder="Best International Route: ..."></textarea>
+
+
+                        </div>
+                        <button type="submit" class="btn-primary" style="padding: 0.8rem 2rem;">Save & Update Website (Travel Info)</button>
+                    </form>
+                </div>
+            </section>
+
+            <!-- Section: Gallery -->
+            <section id="section-gallery" class="view-section">
+                <div class="section-header">
+                    <h1>Gallery Collections Manager</h1>
+                </div>
+
+                <div id="gallery-list-view">
+                    <div class="flex-between" style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                        <h3>Client Collections</h3>
+                        <div style="display: flex; gap: 1rem;">
+                            <button id="btn-save-gallery-order-global" class="btn-primary" style="background: #555; display: none;">Save List Order</button>
+                            <button id="btn-create-gallery" class="btn-primary">+ New Collection</button>
+                        </div>
+                    </div>
+                    <div id="gallery-collections-list" style="display: grid; gap: 1rem;">
+                        <!-- Dynamic List -->
+                    </div>
+                </div>
+
+                <div id="gallery-editor-view" style="display: none;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; background: #fcfcfc; padding: 1.2rem; border-radius: 12px; border: 1px solid #eee; position: sticky; top: 0; z-index: 100;">
+                        <div style="display: flex; gap: 1rem; align-items: center;">
+                            <button class="btn-secondary" id="btn-cancel-gallery-edit" style="border: none; background: none; cursor: pointer; color: var(--accent-gold); font-weight: 600; padding-left: 0;">
+                                <i class="fas fa-arrow-left"></i> Back to Collections
+                            </button>
+                            <button type="button" class="btn-primary" onclick="document.getElementById('gallery-photo-input').click()" style="background: var(--accent-gold);">
+                                <i class="fas fa-cloud-upload-alt"></i> Upload New
+                            </button>
+                            <div class="history-controls" style="display: flex; gap: 0.5rem; border-left: 1px solid #ccc; padding-left: 1rem; margin-left: 0.5rem;">
+                                <button id="btn-gallery-undo" class="btn-secondary" title="Undo (Ctrl+Z)" style="padding: 0.5rem 1rem; font-size: 0.9rem;">
+                                    <i class="fas fa-undo"></i> Undo
+                                </button>
+                                <button id="btn-gallery-redo" class="btn-secondary" title="Redo (Ctrl+Y)" style="padding: 0.5rem 1rem; font-size: 0.9rem;">
+                                    <i class="fas fa-redo"></i> Redo
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; gap: 1rem; align-items: center;">
+                            <span id="gallery-unsaved-badge" style="display: none; background: #ff4757; color: white; padding: 0.3rem 0.8rem; border-radius: 50px; font-size: 0.75rem; font-weight: 600; animation: pulse 2s infinite;">
+                                <i class="fas fa-exclamation-circle"></i> Unsaved Changes
+                            </span>
+                            <button id="btn-save-gallery-layout" class="btn-primary" style="background: #2ed573; min-width: 180px; padding: 0.8rem 1.5rem;">
+                                <i class="fas fa-cloud-upload-alt"></i> SAVE CHANGES
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="glass-card" style="max-width: 100%; padding: 3rem;">
+                        <div style="display: grid; grid-template-columns: 1fr 300px; gap: 3rem;">
+                            
+                            <!-- Left: The Live Grid -->
+                            <div>
+                                <div class="flex-between" style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 1.5rem;">
+                                    <div>
+                                        <h2 id="gallery-editor-title" style="margin: 0; font-size: 2rem;">Edit Collection</h2>
+                                        <p style="opacity: 0.6; margin: 0.5rem 0 0;">Drag to swap. Click a photo & use arrows to adjust thumbnail view.</p>
+                                    </div>
+                                    <div class="preview-controls" style="display: flex; gap: 0.5rem;">
+                                        <button id="preview-desktop" class="btn-primary btn-small" style="padding: 0.6rem 1.2rem; background: #444;"><i class="fas fa-desktop"></i></button>
+                                        <button id="preview-mobile" class="btn-primary btn-small" style="padding: 0.6rem 1.2rem; background: #444;"><i class="fas fa-mobile-alt"></i></button>
+                                    </div>
+                                </div>
+
+                                <div style="background: #7A6D56; padding: 2rem; border-radius: 12px; box-shadow: inset 0 2px 10px rgba(0,0,0,0.2);">
+                                    <div id="live-grid-editor" class="live-grid-container">
+                                        <!-- Photos injected here -->
+                                    </div>
+                                </div>
+
+                                <!-- Reorder Banner -->
+                                <div class="reorder-banner">
+                                    <h4><i class="fas fa-sort-amount-down"></i> Quick Sequence Reorder (Drag to Insert)</h4>
+                                    <div id="reorder-strip" class="reorder-strip">
+                                        <!-- Tiny previews injected here -->
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Right: Collection Metadata & Upload -->
+                            <div style="border-left: 1px solid #eee; padding-left: 3rem;">
+                                <form id="gallery-form">
+                                    <input type="hidden" id="gallery-id">
+                                    <div class="form-group">
+                                        <label>Collection Title</label>
+                                        <input type="text" id="gallery-title" required style="background: #f9f9f9;">
+                                    </div>
+
+                                    
+                                    <div class="form-group" style="margin-top: 2rem;">
+                                        <label>Add More Photos</label>
+                                        <div style="border: 2px dashed #ddd; padding: 2rem; border-radius: 12px; text-align: center; background: #fafafa; transition: all 0.3s;" onmouseover="this.style.borderColor='var(--accent-gold)'" onmouseout="this.style.borderColor='#ddd'">
+                                            <i class="fas fa-cloud-upload-alt" style="font-size: 2rem; color: #ccc; margin-bottom: 1rem;"></i>
+                                            <input type="file" id="gallery-photo-input" multiple accept="image/*" style="display: none;">
+                                            <button type="button" onclick="document.getElementById('gallery-photo-input').click()" class="btn-primary btn-small" style="width: 100%; background: #666;">Choose Files</button>
+                                            <p style="font-size: 0.7rem; margin-top: 1rem; opacity: 0.5;">JPG, PNG supported</p>
+                                        </div>
+                                    </div>
+
+                                    <div id="upload-queue-container" style="margin-top: 1.5rem; display: none;">
+                                        <label style="font-size: 0.8rem; font-weight: 700; margin-bottom: 0.5rem; display: block;">Upload Queue</label>
+                                        <div id="upload-queue-list" style="max-height: 150px; overflow-y: auto; background: #fff; border: 1px solid #eee; border-radius: 8px; padding: 0.5rem;"></div>
+                                        <button type="submit" id="btn-save-uploads" class="btn-primary" style="width: 100%; margin-top: 1rem;">Upload & Sync</button>
+                                    </div>
+
+                                    <!-- Template Selector -->
+                                    <div class="template-selector">
+                                        <label style="font-size: 0.8rem; font-weight: 700; color: #333;">GRID TEMPLATE</label>
+                                        <div class="template-grid">
+                                            <div class="template-card active" data-template="t1">
+                                                <div class="template-icon icon-t1"><div></div><div></div><div></div><div></div></div>
+                                                <span>Puzzle Mix</span>
+                                            </div>
+                                            <div class="template-card" data-template="t2">
+                                                <div class="template-icon icon-t2"><div></div><div></div><div></div><div></div></div>
+                                                <span>Alt Rows</span>
+                                            </div>
+                                            <div class="template-card" data-template="t3">
+                                                <div class="template-icon icon-t3"><div></div><div></div><div></div><div></div></div>
+                                                <span>Storyboards</span>
+                                            </div>
+                                            <div class="template-card" data-template="t4">
+                                                <div class="template-icon icon-t4"><div></div><div></div><div></div><div></div></div>
+                                                <span>Mosaic</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </section>
+            <!-- Section: Portal Canvas Editor -->
+            <section id="section-portal-canvas" class="view-section full-width">
+                <div class="section-header" style="padding: 0 4rem;">
+                    <h1>Galleries Overview Editor</h1>
+                    <div class="live-badge">
+                        <i class="fas fa-circle"></i> Live Layout Mode <span style="color: var(--accent-gold); margin-left: 10px;">HELLO!</span>
+                    </div>
+                </div>
+                
+                <div style="padding: 0 4rem 2rem 4rem;">
+                    <div class="zoom-controls">
+                        <i class="fas fa-search-minus"></i>
+                        <input type="range" id="canvas-zoom" min="0.2" max="1.5" step="0.1" value="1">
+                        <i class="fas fa-search-plus"></i>
+                        <span id="zoom-label">100%</span>
+                    </div>
+
+                    <p style="margin-bottom: 2rem; opacity: 0.7;">
+                        <strong>Free Roam Mode:</strong> Drag items anywhere. <strong>Right-Click</strong> to lock. 
+                        Locked items stay fixed even when others move.
+                    </p>
+                    
+                    <div style="display: flex; gap: 2rem;">
+                        <!-- Sidebar: Unplaced Albums -->
+                        <div class="glass-card" id="unplaced-albums-sidebar" style="width: 250px; flex-shrink: 0; padding: 1.5rem; background: #222; border: 2px solid #333; border-radius: 12px; display: flex; flex-direction: column; gap: 1rem; max-height: 800px; overflow-y: auto;">
+                            <h3 style="color: var(--accent-gold); font-size: 1rem; border-bottom: 2px solid #333; padding-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem;"><i class="fas fa-folder-plus"></i> Unplaced Albums</h3>
+                            <div id="unplaced-albums-list" style="display: flex; flex-direction: column; gap: 1rem;">
+                                <!-- Small thumbnails injected here -->
+                            </div>
+                        </div>
+
+                        <!-- Canvas Workspace -->
+                        <div class="canvas-wrapper" style="flex-grow: 1; min-height: 800px;">
+                            <div id="portal-canvas" class="canvas-container" style="left: 50%; transform: translateX(-50%) scale(1);">
+                                <!-- Visual Guides -->
+                                <div class="screen-boundary"></div>
+                                <div class="center-marker"></div>
+                                <!-- Background Grid -->
+                                <div class="guide-line guide-horizontal" style="top: 250px;"></div>
+                                <div class="guide-line guide-horizontal" style="top: 500px;"></div>
+                                <div class="guide-line guide-horizontal" style="top: 750px;"></div>
+                                <div class="guide-line guide-horizontal" style="top: 1000px;"></div>
+                                <!-- Collection portals injected here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <div style="margin-top: 2rem; display: flex; justify-content: flex-end;">
+                        <button id="btn-save-canvas" class="btn-primary">Save Portal Layout</button>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- ============================================================ -->
+            <!-- Podcast Subtitle Studio section hidden from sidebar nav.      -->
+            <!-- Dashboard tab removed; all subtitle data, Firestore listeners -->
+            <!-- and public-site playback logic remain fully intact.           -->
+            <!-- ============================================================ -->
+            <section id="section-podcast" class="view-section" style="display:none !important;">
+                <div class="section-header">
+                    <h1>Podcast Subtitle Studio</h1>
+                    <p>Edit the transcript for "In Conversation with Dean"</p>
+                </div>
+
+                <div class="glass-card" style="padding: 2rem;">
+                    <div style="margin-bottom: 2rem; background: #f0f0f0; padding: 1.5rem; border-radius: 8px;">
+                        <h3 style="margin-bottom: 0.5rem; font-size: 1rem;">Whisper Magic Import</h3>
+                        <p style="font-size: 0.8rem; margin-bottom: 1rem; opacity: 0.7;">Paste your Whisper/SRT data below to auto-populate the timestamps.</p>
+                        <textarea id="whisper-input" placeholder="[00:00.000 --> 00:05.000] Hello world..." style="width: 100%; height: 100px; padding: 0.8rem; border-radius: 4px; border: 1px solid #ddd; font-family: monospace; font-size: 0.8rem;"></textarea>
+                        <button type="button" class="btn-primary" onclick="importWhisperData()" style="margin-top: 1rem; width: 100%; background: var(--accent-gold); color: white;">
+                            <i class="fas fa-magic"></i> Parse & Import Timestamps
+                        </button>
+                        <button type="button" class="btn-primary" onclick="chopLongLines()" style="margin-top: 0.5rem; width: 100%; background: #555; color: white;">
+                            <i class="fas fa-cut"></i> Auto-Chop Long Lines (1-Line Mode)
+                        </button>
+                    </div>
+
+                    <div style="margin-bottom: 2rem; background: #222; color: #fff; padding: 1.5rem; border-radius: 8px;">
+                        <h3 style="margin-bottom: 1rem; font-size: 1rem; color: var(--accent-gold);">Live Audio Preview</h3>
+                        <audio id="admin-audio-preview" controls style="width: 100%; margin-bottom: 0.5rem;">
+                            <source src="assets/audio/deansnippet.mp3" type="audio/mpeg">
+                        </audio>
+                        <div style="display: flex; justify-content: space-between; font-size: 0.8rem; opacity: 0.8;">
+                            <span>Current Time: <strong id="admin-audio-time">00:00.000</strong></span>
+                            <span>Click time to copy to clipboard</span>
+                        </div>
+                    </div>
+
+                    <div id="subtitle-list">
+                        <!-- Subtitle lines injected here -->
+                    </div>
+                    
+                    <div style="margin-top: 2rem; display: flex; gap: 1rem; justify-content: space-between;">
+                        <button type="button" class="btn-primary" onclick="addSubtitleLine()" style="background: #666;">
+                            <i class="fas fa-plus"></i> Add Subtitle Line
+                        </button>
+                        <button id="btn-save-subtitles" class="btn-primary">Save & Sync Subtitles</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Testimonials -->
+            <section id="section-testimonials" class="view-section">
+                <div class="section-header">
+                    <h1>Testimonials Manager</h1>
+                    <p>Manage guest reviews and their presentation on the site.</p>
+                </div>
+                
+                <div class="glass-card" style="padding: 2rem;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem; background: #fcfcfc; padding: 1.2rem; border-radius: 12px; border: 1px solid #eee; position: sticky; top: 0; z-index: 100;">
+                        <div style="display: flex; gap: 1rem; align-items: center;">
+                            <button type="button" class="btn-primary" onclick="window.addTestimonial(undefined, true)" style="background: var(--accent-gold);">
+                                <i class="fas fa-plus"></i> Add New Testimonial
+                            </button>
+                            <div class="history-controls" style="display: flex; gap: 0.5rem; border-left: 1px solid #ccc; padding-left: 1rem; margin-left: 0.5rem;">
+                                <button id="btn-testimonials-undo" class="btn-secondary" title="Undo (Ctrl+Z)" style="padding: 0.5rem 1rem; font-size: 0.9rem;">
+                                    <i class="fas fa-undo"></i> Undo
+                                </button>
+                                <button id="btn-testimonials-redo" class="btn-secondary" title="Redo (Ctrl+Y)" style="padding: 0.5rem 1rem; font-size: 0.9rem;">
+                                    <i class="fas fa-redo"></i> Redo
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; gap: 1rem; align-items: center;">
+                            <span id="testimonials-unsaved-badge" style="display: none; background: #ff4757; color: white; padding: 0.3rem 0.8rem; border-radius: 50px; font-size: 0.75rem; font-weight: 600; animation: pulse 2s infinite;">
+                                <i class="fas fa-exclamation-circle"></i> Unsaved Changes
+                            </span>
+                            <button id="btn-save-testimonials-action" onclick="saveTestimonials()" class="btn-primary" style="background: #2ed573; min-width: 180px; padding: 0.8rem 1.5rem;">
+                                <i class="fas fa-cloud-upload-alt"></i> SAVE CHANGES
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div id="testimonials-list" style="display: grid; gap: 2rem;">
+                        <!-- Testimonials injected here -->
+                    </div>
+
+                    <div style="margin-top: 3rem; display: flex; justify-content: flex-end; padding-top: 2rem; border-top: 1px solid #eee;">
+                        <button id="btn-save-testimonials-bottom" onclick="saveTestimonials()" class="btn-primary" style="background: #2ed573; padding: 1rem 3rem;">
+                            <i class="fas fa-cloud-upload-alt"></i> SAVE CHANGES
+                        </button>
+                    </div>
+
+
+                </div>
+            </section>
+
+            <!-- Home Carousel Manager Section -->
+            <section id="section-home-carousel" class="view-section">
+                <div class="section-header">
+                    <h1>Home Carousel Manager</h1>
+                    <p>Manage the dynamic images that greet your visitors.</p>
+                </div>
+
+                <div class="glass-card" style="padding: 2rem; max-width: 100%;">
+                    <!-- Top Controls Bar -->
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2.5rem; background: rgba(0,0,0,0.03); padding: 1.5rem; border-radius: 12px; border: 1px solid rgba(0,0,0,0.05);">
+                        <div style="display: flex; gap: 1rem; align-items: center;">
+                            <div class="upload-box">
+                                <input type="file" id="carousel-upload-input" multiple accept="image/*" style="display: none;">
+                                <button type="button" class="btn-primary" onclick="document.getElementById('carousel-upload-input').click()" style="background: var(--accent-gold);">
+                                    <i class="fas fa-plus"></i> Add New Photos
+                                </button>
+                            </div>
+                            <div class="history-controls" style="display: flex; gap: 0.5rem; border-left: 1px solid #ccc; padding-left: 1rem; margin-left: 0.5rem;">
+                                <button id="btn-carousel-undo" class="btn-secondary" title="Undo (Ctrl+Z)" style="padding: 0.5rem 1rem; font-size: 0.9rem;">
+                                    <i class="fas fa-undo"></i> Undo
+                                </button>
+                                <button id="btn-carousel-redo" class="btn-secondary" title="Redo (Ctrl+Y)" style="padding: 0.5rem 1rem; font-size: 0.9rem;">
+                                    <i class="fas fa-redo"></i> Redo
+                                </button>
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; gap: 1rem; align-items: center;">
+                            <span id="carousel-unsaved-badge" style="display: none; background: #ff4757; color: white; padding: 0.3rem 0.8rem; border-radius: 50px; font-size: 0.75rem; font-weight: 600; animation: pulse 2s infinite;">
+                                <i class="fas fa-exclamation-circle"></i> Unsaved Changes
+                            </span>
+                            <button id="btn-save-carousel-order" class="btn-primary" style="background: #2ed573; min-width: 180px; padding: 0.8rem 1.5rem;">
+                                <i class="fas fa-cloud-upload-alt"></i> SAVE CHANGES
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Upload Queue List -->
+                    <div id="carousel-upload-queue" style="margin-bottom: 2rem; display: none;">
+                        <h4 style="font-size: 0.9rem; margin-bottom: 1rem; color: #555;">Pending Uploads (Accepted: JPG, PNG, WEBP)</h4>
+                        <div id="carousel-upload-queue-list" style="display: grid; gap: 0.8rem;">
+                            <!-- Items: Filename | Confirm Btn | Remove Btn -->
+                        </div>
+                        <div style="margin-top: 1rem; font-size: 0.75rem; opacity: 0.6;">
+                            <i class="fas fa-magic"></i> Photos are automatically "washed" (metadata stripped) and compressed for web performance.
+                        </div>
+                    </div>
+
+                    <div style="margin-bottom: 1rem; display: flex; justify-content: space-between; align-items: center;">
+                        <p style="font-size: 0.85rem; opacity: 0.6;">
+                            <i class="fas fa-arrows-alt"></i> Drag to reorder. <strong>Double-click</strong> to adjust focus/framing.
+                        </p>
+                    </div>
+
+                    <div id="carousel-manager-grid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 1.5rem; padding: 1.5rem; background: rgba(0,0,0,0.02); border-radius: 12px; min-height: 300px; border: 2px dashed rgba(0,0,0,0.05);">
+                        <!-- Carousel items injected here -->
+                    </div>
+
+                    <div style="margin-top: 2rem; border-top: 1px solid #eee; padding-top: 1.5rem;">
+                        <p style="font-size: 0.8rem; color: #666; font-style: italic;">
+                            Note: All changes are local until you click 'SAVE CHANGES'. Deleting an image will hide it from this list, but you can Undo the action before saving.
+                        </p>
+                        <div style="margin-top: 1rem; display: flex; justify-content: flex-end;">
+                            <button id="btn-save-carousel-bottom" onclick="saveCarouselChanges()" class="btn-primary" style="background: #2ed573; padding: 1rem 3rem;">
+                                <i class="fas fa-cloud-upload-alt"></i> SAVE CHANGES
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <!-- Section: Admin Managers -->
+            <section id="section-admin-users" class="view-section active">
+                <div class="section-header">
+                    <h1>Admin Managers</h1>
+                    <p>Manage who has access to this dashboard.</p>
+                </div>
+                <div class="glass-card" style="margin-bottom: 2rem;">
+                    <h2>Authorised Administrators</h2>
+                    <div id="admin-users-list" style="margin-top: 1.5rem; display: flex; flex-direction: column; gap: 1rem;">
+                        <!-- JS injected list -->
+                    </div>
+                </div>
+                <div class="glass-card">
+                    <h2>Add New Administrator</h2>
+                    <p style="opacity: 0.7; margin-bottom: 1.5rem; font-size: 0.9rem;">The user must sign in using this exact email address via Google sign-in.</p>
+                    <div style="display: flex; gap: 1rem; align-items: flex-end;">
+                        <div class="form-group" style="flex: 1; margin-bottom: 0;">
+                            <label>Google Email Address</label>
+                            <input type="email" id="new-admin-email" placeholder="e.g. name@gmail.com">
+                        </div>
+                        <button id="btn-add-admin" class="btn-primary" style="padding: 1rem 2rem;">Add Admin</button>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Section: Acknowledgements -->
+            <section id="section-acknowledgements" class="view-section">
+                <div class="section-header">
+                    <h1>Acknowledgements</h1>
+                    <p>Manage the public acknowledgements shown in the site footer modal. The developer credit is fixed and cannot be edited here.</p>
+                </div>
+
+                <!-- Static: Ailsa Watson (read-only display) -->
+                <div class="glass-card" style="margin-bottom: 2rem;">
+                    <h3 style="margin-bottom: 1rem;"><i class="fas fa-lock" style="color: var(--accent-gold); margin-right: 0.5rem;"></i>Web Design &amp; Development (Static — Fixed)</h3>
+                    <div style="background: rgba(227,168,87,0.05); border: 1px solid rgba(227,168,87,0.2); padding: 1.5rem; border-radius: 8px; font-size: 0.9rem; color: #555; line-height: 1.7;">
+                        <p style="margin: 0 0 0.5rem 0;"><strong>Ailsa Watson</strong> — Web Designer &amp; Developer</p>
+                        <p style="margin: 0 0 0.5rem 0;">Zoologist · FGASA Level 2 Field Guide · MSc Applied Conservation Science &amp; African Ecosystems Management</p>
+                        <p style="margin: 0; font-style: italic; color: #888;">This credit is hardcoded and will always appear. To update it, contact your developer.</p>
+                    </div>
+                </div>
+
+                <!-- Dynamic: Photography Credits -->
+                <div class="glass-card">
+                    <h3 style="margin-bottom: 0.5rem;"><i class="fas fa-camera" style="color: var(--accent-gold); margin-right: 0.5rem;"></i>Photography Credits</h3>
+                    <p style="color: #777; font-size: 0.9rem; margin-bottom: 1.5rem;">Enter the list of names of people who provided photography for this platform (separated by commas, e.g. Carry, Elise, Shona).</p>
+
+                    <div class="form-group">
+                        <input type="text" id="photographers-input" placeholder="e.g. Carry, Elise, Shona" style="width: 100%; padding: 0.65rem 1rem; border: 1px solid #ddd; border-radius: 6px; font-family: inherit; font-size: 0.95rem; background: #f9f9f9;">
+                    </div>
+
+                    <button id="btn-save-photographers" class="btn-primary" style="margin-top: 1.5rem; width: 100%;">
+                        <i class="fas fa-save"></i> Save Photography Credits
+                    </button>
+                </div>
+            </section>
+        </main>
+        <div class="main-content-footer"></div>
+    </div>
+
+    <!-- Confirmation Modals -->
+    <div id="return-site-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h2 style="margin-bottom: 1rem;">Return to Site?</h2>
+            <p>You will remain logged in to the dashboard.</p>
+            <div class="modal-btns">
+                <button class="btn-primary" id="btn-modal-cancel" style="background: #666;">Cancel</button>
+                <button class="btn-primary" id="btn-modal-confirm">OK</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Unsaved Changes Modal -->
+    <div id="unsaved-changes-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h2 style="color: #ff4757; margin-bottom: 1rem;"><i class="fas fa-exclamation-triangle"></i> Unsaved Changes</h2>
+            <p>You have unsaved edits in this section. If you leave now, these changes will be lost.</p>
+            <div class="modal-btns" style="margin-top: 2rem;">
+                <button class="btn-primary" id="btn-cancel-nav" style="background: #666;">Stay Here</button>
+                <button class="btn-primary" id="btn-confirm-nav" style="background: #ff4757;">Discard & Leave</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Carousel Focal Point Editor Modal -->
+    <div id="carousel-focal-modal" class="modal-overlay">
+        <div class="modal-card" style="max-width: 900px; width: 95%;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <div>
+                    <h2 style="margin: 0;">Adjust Photo Framing</h2>
+                    <p style="margin: 0.5rem 0 0; opacity: 0.6; font-size: 0.9rem;">The bright area shows what will be visible on the homepage.</p>
+                </div>
+                <button class="panel-close-btn" id="btn-close-focal-modal" style="position: static; font-size: 2rem;">&times;</button>
+            </div>
+
+            <div id="focal-editor-container" style="position: relative; width: 500px; height: 500px; margin: 0 auto; background: #eee; overflow: hidden; border-radius: 8px; cursor: move; user-select: none; border: 4px solid var(--accent-gold); box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+                <!-- The image -->
+                <img id="focal-editor-img" src="" style="position: absolute; top: 0; left: 0; pointer-events: none; transition: none;">
+                
+                <!-- Simple Crosshair Guideline (Very faint) -->
+                <div style="position: absolute; top: 50%; left: 0; width: 100%; height: 1px; background: rgba(255,255,255,0.4); z-index: 11; pointer-events: none;"></div>
+                <div style="position: absolute; left: 50%; top: 0; height: 100%; width: 1px; background: rgba(255,255,255,0.4); z-index: 11; pointer-events: none;"></div>
+            </div>
+
+            <div style="margin-top: 1.5rem; display: flex; justify-content: space-between; align-items: center; background: #f9f9f9; padding: 1rem; border-radius: 8px;">
+                <div style="font-size: 0.85rem; color: #666;">
+                    <i class="fas fa-keyboard"></i> <strong>Shortcuts:</strong> Arrows to nudge, Shift+Arrows to move faster.
+                </div>
+                <div style="display: flex; gap: 1rem;">
+                    <button class="btn-secondary" id="btn-reset-focal" style="border: 1px solid #ccc;">Reset Center</button>
+                    <button class="btn-primary" id="btn-save-focal" style="padding: 0.8rem 2.5rem;">Done</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Gallery Focal Point Editor Modal -->
+    <div id="gallery-focal-modal" class="modal-overlay">
+        <div class="modal-card" style="max-width: 900px; width: 95%;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <div>
+                    <h2 style="margin: 0;">Adjust Gallery Photo Framing</h2>
+                    <p style="margin: 0.5rem 0 0; opacity: 0.6; font-size: 0.9rem;">Drag the photo to adjust how it is cropped in this position in the mosaic.</p>
+                </div>
+                <button class="panel-close-btn" id="btn-close-gallery-focal-modal" style="position: static; font-size: 2rem;">&times;</button>
+            </div>
+
+            <!-- Centering container for the editor -->
+            <div style="display: flex; align-items: center; justify-content: center; height: 520px; background: rgba(0,0,0,0.05); border-radius: 8px; padding: 10px;">
+                <div id="gallery-focal-editor-container" style="position: relative; width: 500px; height: 500px; background: #eee; overflow: hidden; border-radius: 8px; cursor: move; user-select: none; border: 4px solid var(--accent-gold); box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+                    <!-- The image -->
+                    <img id="gallery-focal-editor-img" src="" style="position: absolute; top: 0; left: 0; pointer-events: none; transition: none;">
+                    
+                    <!-- Simple Crosshair Guideline (Very faint) -->
+                    <div style="position: absolute; top: 50%; left: 0; width: 100%; height: 1px; background: rgba(255,255,255,0.4); z-index: 11; pointer-events: none;"></div>
+                    <div style="position: absolute; left: 50%; top: 0; height: 100%; width: 1px; background: rgba(255,255,255,0.4); z-index: 11; pointer-events: none;"></div>
+                </div>
+            </div>
+
+            <div style="margin-top: 1.5rem; display: flex; justify-content: space-between; align-items: center; background: #f9f9f9; padding: 1rem; border-radius: 8px;">
+                <div style="font-size: 0.85rem; color: #666;">
+                    <i class="fas fa-keyboard"></i> <strong>Shortcuts:</strong> Arrows to nudge, Shift+Arrows to move faster.
+                </div>
+                <div style="display: flex; gap: 1rem;">
+                    <button class="btn-secondary" id="btn-reset-gallery-focal" style="border: 1px solid #ccc;">Reset Center</button>
+                    <button class="btn-primary" id="btn-save-gallery-focal" style="padding: 0.8rem 2.5rem;">Done</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Collection Hero Focal Point Editor Modal -->
+    <div id="hero-focal-modal" class="modal-overlay">
+        <div class="modal-card" style="max-width: 900px; width: 95%;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <div>
+                    <h2 style="margin: 0;">Adjust Collection Page Hero Framing</h2>
+                    <p style="margin: 0.5rem 0 0; opacity: 0.6; font-size: 0.9rem;">Drag the photo to adjust how it is cropped in the wide hero banner on the collection page.</p>
+                </div>
+                <button class="panel-close-btn" id="btn-close-hero-focal-modal" style="position: static; font-size: 2rem;">&times;</button>
+            </div>
+
+            <!-- Centering container for the editor -->
+            <div style="display: flex; align-items: center; justify-content: center; height: 360px; background: rgba(0,0,0,0.05); border-radius: 8px; padding: 10px;">
+                <div id="hero-focal-editor-container" style="position: relative; width: 800px; height: 300px; background: #eee; overflow: hidden; border-radius: 8px; cursor: move; user-select: none; border: 4px solid var(--accent-gold); box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+                    <!-- The image -->
+                    <img id="hero-focal-editor-img" src="" style="position: absolute; top: 0; left: 0; pointer-events: none; transition: none;">
+                    
+                    <!-- Simple Crosshair Guideline (Very faint) -->
+                    <div style="position: absolute; top: 50%; left: 0; width: 100%; height: 1px; background: rgba(255,255,255,0.4); z-index: 11; pointer-events: none;"></div>
+                    <div style="position: absolute; left: 50%; top: 0; height: 100%; width: 1px; background: rgba(255,255,255,0.4); z-index: 11; pointer-events: none;"></div>
+                </div>
+            </div>
+
+            <div style="margin-top: 1.5rem; display: flex; justify-content: space-between; align-items: center; background: #f9f9f9; padding: 1rem; border-radius: 8px;">
+                <div style="font-size: 0.85rem; color: #666;">
+                    <i class="fas fa-keyboard"></i> <strong>Shortcuts:</strong> Arrows to nudge, Shift+Arrows to move faster.
+                </div>
+                <div style="display: flex; gap: 1rem;">
+                    <button class="btn-secondary" id="btn-reset-hero-focal" style="border: 1px solid #ccc;">Reset Center</button>
+                    <button class="btn-primary" id="btn-save-hero-focal" style="padding: 0.8rem 2.5rem;">Done</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="generic-confirm-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h2 id="confirm-title" style="margin-bottom: 1rem;">Are you sure?</h2>
+            <p id="confirm-msg">Do you want to proceed with this action?</p>
+            <div class="modal-btns" style="margin-top: 2.5rem;">
+                <button class="btn-primary" id="btn-confirm-cancel" style="background: #666;">Cancel</button>
+                <button class="btn-primary" id="btn-confirm-ok" style="background: #ff4757;">Yes, Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="delete-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h2 style="color: #ff6b6b; margin-bottom: 1rem;">Confirm Deletion</h2>
+            <p>Type <strong>DELETE</strong> to confirm.</p>
+            <input type="text" id="delete-confirm-input" class="form-group" style="width: 100%; text-align: center; padding: 0.8rem; margin: 1rem 0;">
+            <div class="modal-btns">
+                <button class="btn-primary" id="btn-cancel-delete" style="background: #666;">Cancel</button>
+                <button class="btn-primary" id="btn-confirm-delete" style="background: #ff6b6b;" disabled>Confirm Delete</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="unsaved-changes-modal" class="modal-overlay">
+        <div class="modal-card">
+            <h2 style="color: var(--accent-gold); margin-bottom: 1rem;"><i class="fas fa-exclamation-triangle"></i> Unsaved Changes</h2>
+            <p>You have unsaved changes. Navigating away will lose your progress.</p>
+            <div class="modal-btns">
+                <button class="btn-primary" id="btn-cancel-nav" style="background: #666;">Cancel</button>
+                <button class="btn-primary" id="btn-confirm-nav">Continue & Discard</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Collection Created Redirection Modal -->
+    <div id="collection-created-modal" class="modal-overlay">
+        <div class="modal-card" style="text-align: center;">
+            <h2 style="color: var(--sunset-gold); margin-bottom: 1rem;"><i class="fas fa-check-circle"></i> Collection Created successfully!</h2>
+            <p style="margin-bottom: 2rem;">Your new album is staged in the system. Click below to open the Galleries Overview Editor and place its cover photo on the website grid.</p>
+            <div class="modal-btns" style="justify-content: center;">
+                <button class="btn-primary" id="btn-portal-redirect" style="background: var(--accent-gold); color: white;">Open Galleries Overview Editor</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Portal Cover Photo Focal Point Editor Modal -->
+    <div id="portal-focal-modal" class="modal-overlay">
+        <div class="modal-card" style="max-width: 900px; width: 95%;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1.5rem;">
+                <div>
+                    <h2 style="margin: 0;">Adjust Portal Mosaic Cover Framing</h2>
+                    <p style="margin: 0.5rem 0 0; opacity: 0.6; font-size: 0.9rem;">Drag the cover photo to adjust its cropping inside the portal mosaic grid card shape.</p>
+                </div>
+                <button class="panel-close-btn" id="btn-close-portal-focal-modal" style="position: static; font-size: 2rem;">&times;</button>
+            </div>
+
+            <!-- Centering container for the editor -->
+            <div style="display: flex; align-items: center; justify-content: center; height: 520px; background: rgba(0,0,0,0.05); border-radius: 8px; padding: 10px;">
+                <div id="portal-focal-editor-container" style="position: relative; width: 300px; height: 200px; background: #eee; overflow: hidden; border-radius: 8px; cursor: move; user-select: none; border: 4px solid var(--accent-gold); box-shadow: 0 10px 30px rgba(0,0,0,0.2);">
+                    <!-- The image -->
+                    <img id="portal-focal-editor-img" src="" style="position: absolute; top: 0; left: 0; pointer-events: none; transition: none;">
+                    
+                    <!-- Simple Crosshair Guideline (Very faint) -->
+                    <div style="position: absolute; top: 50%; left: 0; width: 100%; height: 1px; background: rgba(255,255,255,0.4); z-index: 11; pointer-events: none;"></div>
+                    <div style="position: absolute; left: 50%; top: 0; height: 100%; width: 1px; background: rgba(255,255,255,0.4); z-index: 11; pointer-events: none;"></div>
+                </div>
+            </div>
+
+            <div style="margin-top: 1.5rem; display: flex; justify-content: space-between; align-items: center; background: #f9f9f9; padding: 1rem; border-radius: 8px;">
+                <div style="font-size: 0.85rem; color: #666;">
+                    <i class="fas fa-keyboard"></i> <strong>Shortcuts:</strong> Arrows to nudge, Shift+Arrows to move faster.
+                </div>
+                <div style="display: flex; gap: 1rem;">
+                    <button class="btn-secondary" id="btn-reset-portal-focal" style="border: 1px solid #ccc;">Reset Center</button>
+                    <button class="btn-primary" id="btn-save-portal-focal" style="padding: 0.8rem 2.5rem;">Done</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Global Controls -->
+    <div class="global-controls">
+        <button id="btn-global-undo" class="control-btn" title="Undo (Ctrl+Z)" disabled>
+            <i class="fas fa-undo"></i>
+        </button>
+        <button id="btn-global-redo" class="control-btn" title="Redo (Ctrl+Y)" disabled>
+            <i class="fas fa-redo"></i>
+        </button>
+    </div>
+
+    <!-- Cheat Sheet Trigger -->
+    <div class="cheat-sheet-trigger" id="btn-open-cheat-sheet" title="View Controls Cheat Sheet">
+        <i class="fas fa-question"></i>
+    </div>
+
+    <!-- Cheat Sheet Modal -->
+    <div id="cheat-sheet-modal" class="modal-overlay">
+        <div class="cheat-modal-card">
+            <div class="cheat-header">
+                <h3 style="margin:0;"><i class="fas fa-keyboard"></i> Editor Controls & Keybinds</h3>
+                <span class="modal-close-x" id="btn-close-cheat-sheet" style="cursor:pointer; font-size:1.5rem;">&times;</span>
+            </div>
+            <div class="cheat-body" style="color:#333;">
+                <div class="cheat-section">
+                    <h4>Formatting Shortcuts (Text Fields)</h4>
+                    <ul class="cheat-list">
+                        <li class="cheat-item">
+                            <span>Bold Selected Text</span> 
+                            <div>
+                                <span class="cheat-key-windows"><i class="fab fa-windows"></i> Ctrl + B</span>
+                                <span class="cheat-key-mac"><i class="fab fa-apple"></i> Cmd + B</span>
+                            </div>
+                        </li>
+                        <li class="cheat-item">
+                            <span>Manual Bold (Markdown style)</span>
+                            <span class="cheat-key">**text**</span>
+                        </li>
+                        <li class="cheat-item">
+                            <span>Fresh Paragraph (Biography Textareas)</span>
+                            <div>
+                                <span class="cheat-key-windows"><i class="fab fa-windows"></i> Ctrl + Enter</span>
+                                <span class="cheat-key-mac"><i class="fab fa-apple"></i> Cmd + Enter</span>
+                            </div>
+                        </li>
+                        <li class="cheat-item">
+                            <span>Fine-Print Footnote Style</span> 
+                            <div>
+                                <span class="cheat-key-windows"><i class="fab fa-windows"></i> Ctrl + I</span>
+                                <span class="cheat-key-mac"><i class="fab fa-apple"></i> Cmd + I</span>
+                            </div>
+                        </li>
+                        <li class="cheat-item">
+                            <span>Standard Line Break</span>
+                            <span class="cheat-key">Enter</span>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="cheat-section">
+                    <h4>Global Actions</h4>
+                    <ul class="cheat-list">
+                        <li class="cheat-item">
+                            <span>Save Changes (Publish Live)</span>
+                            <div>
+                                <span class="cheat-key-windows"><i class="fab fa-windows"></i> Ctrl + S</span>
+                                <span class="cheat-key-mac"><i class="fab fa-apple"></i> Cmd + S</span>
+                            </div>
+                        </li>
+                        <li class="cheat-item">
+                            <span>Undo Last Change</span>
+                            <div>
+                                <span class="cheat-key-windows"><i class="fab fa-windows"></i> Ctrl + Z</span>
+                                <span class="cheat-key-mac"><i class="fab fa-apple"></i> Cmd + Z</span>
+                            </div>
+                        </li>
+                        <li class="cheat-item">
+                            <span>Redo Last Change</span>
+                            <div>
+                                <span class="cheat-key-windows"><i class="fab fa-windows"></i> Ctrl + Y</span>
+                                <span class="cheat-key-mac"><i class="fab fa-apple"></i> Cmd + Y / Shift+Z</span>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+
+                <div class="cheat-section">
+                    <h4>Collections & Gallery Editor</h4>
+                    <ul class="cheat-list">
+                        <li class="cheat-item"><span>Set Album Cover</span> <span class="cheat-key">Click Star Icon</span></li>
+                        <li class="cheat-item"><span>Smart Reordering</span> <span class="cheat-key">Drag & Swap</span></li>
+                        <li class="cheat-item"><span>Focal Point Crop</span> <span class="cheat-key">Double Click / Tap Card</span></li>
+                        <li class="cheat-item"><span>Edit Hero Framing</span> <span class="cheat-key">Double Right-Click / Two-Finger Tap</span></li>
+                    </ul>
+                </div>
+
+                <div class="cheat-section">
+                    <h4>Galleries Overview Editor (Site Home)</h4>
+                    <ul class="cheat-list">
+                        <li class="cheat-item"><span>Enable Keyboard Movement</span> <span class="cheat-key">Double Click / Tap Card</span></li>
+                        <li class="cheat-item"><span>Move Selected Item</span> <span class="cheat-key">Arrow Keys</span></li>
+                        <li class="cheat-item"><span>Fast Nudge (10px)</span> <span class="cheat-key">Shift + Arrows</span></li>
+                        <li class="cheat-item"><span>Deselect Item</span> <span class="cheat-key">Click Canvas Background</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Snackbar -->
+    <div id="snackbar" style="position: fixed; bottom: 2rem; left: 50%; transform: translateX(-50%); background: #333; color: white; padding: 1rem 2rem; border-radius: 8px; display: none; z-index: 6000; box-shadow: 0 4px 12px rgba(0,0,0,0.3); align-items: center; gap: 2rem;">
+        <span id="snackbar-text">Update Successful</span>
+        <button id="btn-undo" class="btn-primary" style="padding: 0.4rem 1rem; font-size: 0.8rem;">UNDO</button>
+    </div>
+
+</body>
+</html>

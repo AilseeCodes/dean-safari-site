@@ -1,0 +1,8 @@
+{
+  "projects": {
+    "default": "deansafaris",
+    "production": "deanmcgregorsafaris-live"
+  },
+  "targets": {},
+  "etags": {}
+}

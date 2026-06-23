@@ -1,0 +1,718 @@
+<!-- OWNER HANDOVER DATA
+Analytics Dashboard (Read-Only): https://deansafaris.goatcounter.com
+-->
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dean McGregor Safaris | Private Safari & Wilderness Guide Zimbabwe</title>
+    <meta name="description"
+        content="Embark on custom private safari expeditions in Zimbabwe with expert guide Dean McGregor. Bespoke tailored tours in Victoria Falls, Hwange, Mana Pools, Gonarezhou, and the Zambezi Valley.">
+    <meta name="google-site-verification" content="2UpqqFGLhKVEQ0D46_70WeC-bqaOGxjlu3Ci7LaQK_g" />
+
+    <!-- Preconnect to speed up font delivery -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=77">
+    <link rel="icon" type="image/png" href="assets/images/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="assets/images/favicon.png" sizes="192x192">
+    <link rel="apple-touch-icon" href="assets/images/favicon.png">
+
+    <!-- Open Graph / Facebook Share Metadata -->
+    <meta property="og:title" content="Dean McGregor Safaris | Private Safari & Wilderness Guide Zimbabwe">
+    <meta property="og:description"
+        content="Embark on custom private safari expeditions in Zimbabwe with expert guide Dean McGregor. Bespoke tailored tours in Victoria Falls, Hwange, Mana Pools, Gonarezhou, and the Zambezi Valley.">
+    <meta property="og:image" content="https://www.deanmcgregorsafaris.com/assets/images/hero.jpg">
+    <meta property="og:url" content="https://www.deanmcgregorsafaris.com">
+    <meta property="og:type" content="website">
+
+    <!-- Twitter Card Share Metadata -->
+    <meta name="twitter:card" content="summary_large_image">
+
+    <!-- Structured Data (JSON-LD) for Search Engines -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "TravelAgency",
+      "name": "Dean McGregor Safaris",
+      "description": "Private safari guiding and bespoke travel planning service in Zimbabwe.",
+      "url": "https://www.deanmcgregorsafaris.com",
+      "logo": "https://www.deanmcgregorsafaris.com/assets/logo.png",
+      "address": {
+        "@type": "PostalAddress",
+        "streetAddress": "Plot 141 Monde Village",
+        "addressLocality": "Victoria Falls",
+        "addressRegion": "Matabeleland North",
+        "addressCountry": "ZW"
+      },
+      "telephone": "+263 77 342 3079",
+      "email": "deanmcgregorsafaris@gmail.com",
+      "sameAs": [
+        "https://www.instagram.com/mcgregorsafaris",
+        "https://www.facebook.com/profile.php?id=61570984767601"
+      ]
+    }
+    </script>
+</head>
+
+<body>
+
+    <!-- Navigation -->
+    <nav class="navbar glass-panel">
+        <div class="container nav-wrapper">
+            <a href="#hero" class="logo">DEAN McGREGOR <span>SAFARIS</span></a>
+            <button class="nav-toggle" aria-label="Toggle Navigation">
+                <span class="hamburger"></span>
+            </button>
+            <ul class="nav-links">
+                <li><a href="index.html#hero">Home</a></li>
+                <li class="nav-item dropdown">
+                    <a href="index.html#experience" class="nav-link dropdown-toggle">Your Guide</a>
+                    <ul class="dropdown-menu">
+                        <div class="dropdown-menu-inner">
+                            <li><a href="about-dean.html">Dean McGregor</a></li>
+                            <li><a href="#conversation">Wild Words with Dean</a></li>
+                            <li><a href="#testimonials">Guest Testimonials</a></li>
+                        </div>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a href="index.html#services" class="nav-link dropdown-toggle">Our Safaris</a>
+                    <ul class="dropdown-menu">
+                        <div class="dropdown-menu-inner" id="safaris-dropdown-list">
+                            <li><a href="safaris.html">Build Your Experience</a></li>
+                        </div>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a href="index.html#gallery" class="nav-link dropdown-toggle">Gallery</a>
+                    <ul class="dropdown-menu">
+                        <div class="dropdown-menu-inner">
+                            <li><a href="gallery.html">View Full Gallery</a></li>
+                            <li class="dropdown-item has-sub">
+                                <span class="sub-toggle">Collections</span>
+                                <ul class="sub-dropdown" id="collections-dropdown-list">
+                                    <!-- Dynamically populated from galleries -->
+                                </ul>
+                            </li>
+                        </div>
+                    </ul>
+                </li>
+                <li><a href="index.html#masterclass">Why Choose Us</a></li>
+                <li><a href="index.html#contact">Contact Us</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="hero-section" id="hero">
+        <div class="hero-background">
+            <img src="assets/images/hero.jpg" alt="Dean McGregor Safari" class="parallax-img">
+            <div class="park-hero-overlay"></div>
+        </div>
+        <div class="hero-content-minimal">
+            <span class="section-tag">Wilderness Expeditions</span>
+            <h1>Dean McGregor Safaris</h1>
+            <p class="subtitle">Authentic Zimbabwe Safaris with your Private Wilderness Guide</p>
+            <div class="hero-actions">
+                <a href="#contact" class="btn-primary">Enquire Now</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- The 'Experience' Section -->
+    <section class="experience-section">
+        <div class="container layout-split">
+            <div class="experience-text">
+                <span class="section-tag">Meet Dean</span>
+                <h2 style="position: relative;">
+                    <span id="experience" style="position: absolute; top: -150px; visibility: hidden;"></span>
+                    Guided by Nature.<br>Trained by Experience.
+                </h2>
+                <div class="bio-paragraph">
+                    <span class="drop-cap">D</span>ean McGregor McGregor is a distinguished guide with extensive
+                    experience leading
+                    Safaris and Conservation expeditions in East and West Africa, as well as offering private tours for
+                    groups throughout
+                    Zimbabwe's national parks. His years of guidance are complemented by an
+                    <span class="knowledge-trigger">impressive breadth of knowledge
+                        <span class="knowledge-popover glass-panel">
+                            <strong>Specialist Expertise</strong>
+                            <ul>
+                                <li>Tracking & Sign (Rhino Specialist)</li>
+                                <li>Ornithology (Rare Birding)</li>
+                                <li>Entomology & Botany (Small Wonders)</li>
+                                <li>Regional History & Conservation Ethics</li>
+                            </ul>
+                            <div class="popover-close-tip">Tap anywhere outside to close</div>
+                        </span>
+                    </span>, which he imparts with a captivating blend of wit and humour. Dean's engaging storytelling
+                    brings the landscapes and wildlife of Zimbabwe to life, offering an immersive and unforgettable
+                    safari experience. Whether trekking through the bush or sharing fireside tales, Dean ensures that
+                    every tour is informative and irresistibly enjoyable.
+                    <a href="about-dean.html" class="elegant-link">Learn
+                        more about <span class="accent-name">Dean</span> &rarr;</a>
+                </div>
+            </div>
+            <div class="experience-image glass-card-image">
+                <img src="assets/images/bio.png" alt="Dean McGregor Bio Portrait">
+            </div>
+        </div>
+    </section>
+
+    <!-- Social Connection Strip -->
+    <div class="social-strip">
+        <div class="container strip-flex">
+            <span>Connect with the Wild:</span>
+            <div class="social-icons">
+                <a href="#" class="secure-social" data-platform="instagram" data-handle="sirafasrogergcm"
+                    aria-label="Instagram">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                        <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                        <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                    </svg>
+                    @mcgregorsafaris
+                </a>
+                <a href="#" class="secure-social" data-platform="facebook" data-handle="10674890787516=di?php.eliforp"
+                    aria-label="Facebook">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                        stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                    </svg>
+                    Dean McGregor Safaris
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Our Safari Operations Section -->
+    <section class="services-section safari-operations-section">
+        <div class="container">
+            <h2 class="section-title" style="position: relative;">
+                <span id="services" style="position: absolute; top: -150px; visibility: hidden;"></span>
+                Our Safari Operations
+            </h2>
+
+            <div class="safari-ops-flex">
+                <div class="safari-ops-text-side">
+                    <p class="safari-ops-tagline">Your Bespoke Wilderness Expeditions, Designed Around You</p>
+                    <p class="safari-ops-body">We curate authentic journeys across Zimbabwe&#39;s premier National
+                        Parks,
+                        including Zambezi, Hwange, Mana Pools, Gonarezhou, and more. Whether you seek a single-day game
+                        drive
+                        or bush
+                        walk, or a multi-day immersive expedition across the expanse of Zimbabwe, we meticulously
+                        liaise, organise, and coordinate
+                        every detail
+                        to bring your African dream to life.</p>
+                    <ul class="safari-ops-list">
+                        <li><strong>Tailored Itineraries:</strong> Designed around your interests, budget, and
+                            timeframe.</li>
+                        <li><strong>Flexible Stays:</strong> Remote bush camping, luxury lodges, or a hybrid of both.
+                        </li>
+                        <li><strong>Expert Guiding:</strong> Single-day treks to multi-park naturalist expeditions.</li>
+                    </ul>
+                </div>
+
+                <div class="safari-ops-panel-side">
+                    <!-- Singular Gateway Panel -->
+                    <a href="safaris.html" class="safari-main-panel interactive-hover" id="safari-gateway">
+                        <div class="panel-overlay"></div>
+                        <div class="panel-content">
+                            <h3 id="gateway-title">Bespoke Safari Expeditions</h3>
+                            <p id="gateway-desc">Loading our safari operations...</p>
+                            <span class="portal-cta">Explore Our Safaris &rarr;</span>
+                        </div>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="gallery-section">
+        <h2 class="section-title" style="position: relative;">
+            <span id="gallery" style="position: absolute; top: -150px; visibility: hidden;"></span>
+            Gallery
+        </h2>
+        <div class="gallery-cta-wrapper">
+            <p>View our photography collections <a href="gallery.html" class="inline-cta">here</a></p>
+        </div>
+        <div class="carousel-container">
+            <div class="carousel-track" id="home-carousel-track">
+                <!-- Dynamically loaded from Firestore -->
+                <p style="text-align: center; width: 100%; opacity: 0.5; padding: 2rem;">Loading Gallery...</p>
+            </div>
+
+            <div class="mobile-gallery-grid" id="mobile-gallery-grid">
+                <!-- Dynamically loaded from Firestore -->
+            </div>
+
+            <script type="module">
+                import { app } from './firebase-init.js';
+                import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
+
+                const db = getFirestore(app);
+                const track = document.getElementById('home-carousel-track');
+                const mobileGrid = document.getElementById('mobile-gallery-grid');
+
+                async function loadCarousel() {
+                    try {
+                        const docSnap = await getDoc(doc(db, "site_config", "home_carousel"));
+                        let images = [];
+
+                        if (docSnap.exists()) {
+                            images = docSnap.data().images || [];
+                        } else {
+                            // Fallback to defaults if no config exists yet
+                            images = [
+                                { url: "assets/images/gallery-campfire.jpg", alt: "Bush Campfire" },
+                                { url: "assets/images/gallery-giraffe.jpg", alt: "Conservation Work" },
+                                { url: "assets/images/gallery-rhino-baby.jpg", alt: "Rhino and Baby" },
+                                { url: "assets/images/gallery-hippo.jpg", alt: "Hippo Yawning" },
+                                { url: "assets/images/gallery-truck-1.jpg", alt: "Safari Truck" },
+                                { url: "assets/images/gallery-vic-falls.jpg", alt: "Victoria Falls" },
+                                { url: "assets/images/gallery-lions-bush.jpg", alt: "Lions in the Wild" },
+                                { url: "assets/images/gallery-butterfly.jpg", alt: "Safari Butterfly" },
+                                { url: "assets/images/gallery-kudu.jpg", alt: "Kudu Antelope" },
+                                { url: "assets/images/gallery-rhino-touch.jpg", alt: "Rhino Connection" },
+                                { url: "assets/images/gallery-lake.jpg", alt: "Safari Landscape" },
+                                { url: "assets/images/gallery-chameleon.png", alt: "Chameleon" },
+                                { url: "assets/images/gallery-walking-bush.jpg", alt: "Guided Bush Walk" },
+                                { url: "assets/images/gallery-elephant-reflection.jpg", alt: "Elephant Reflection" },
+                                { url: "assets/images/gallery-zebra.jpg", alt: "Zebra Resting" },
+                                { url: "assets/images/gallery-hornbill.jpg", alt: "Yellow-billed Hornbill" },
+                                { url: "assets/images/gallery-lion-truck.jpg", alt: "Lion Encounter" },
+                                { url: "assets/images/gallery-millipede.jpg", alt: "Giant Millipede" },
+                                { url: "assets/images/gallery-flame-lily.jpg", alt: "Flame Lily" },
+                                { url: "assets/images/gallery-snake.jpg", alt: "Tracking Wildlife" },
+                                { url: "assets/images/gallery-blue-bird.jpg", alt: "Greater Blue-eared Starling" },
+                                { url: "assets/images/gallery-group.jpg", alt: "Safari Group" },
+                                { url: "assets/images/gallery-tortoise-shoes.jpg", alt: "Small Encounter" },
+                                { url: "assets/images/gallery-elephant-water.jpg", alt: "Elephant Crossing" },
+                                { url: "assets/images/gallery-rhinos-bush.jpg", alt: "Rhinos in the Bush" },
+                                { url: "assets/images/gallery-bug.jpg", alt: "Jewel Beetle" },
+                                { url: "assets/images/gallery-water-bird.jpg", alt: "Wildlife by the River" },
+                                { url: "assets/images/gallery-truck-2.jpg", alt: "Safari Experience" },
+                                { url: "assets/images/gallery-lourie.jpg", alt: "Grey Lourie" },
+                                { url: "assets/images/gallery-tortoise.jpg", alt: "Wild Tortoise" }
+                            ];
+                        }
+
+                        track.innerHTML = '';
+                        images.forEach(img => {
+                            const focal = img.focal || { x: 50, y: 50 };
+                            const scale = img.scale || 1.0;
+                            const slide = document.createElement('div');
+                            slide.className = 'carousel-slide';
+                            slide.innerHTML = `<img src="${img.url}" alt="${img.alt || 'Safari Photo'}" style="object-position: ${focal.x}% ${focal.y}%; transform: scale(${scale});">`;
+                            track.appendChild(slide);
+                        });
+
+                        // Populate mobile 2x2 grid
+                        if (mobileGrid && images.length >= 4) {
+                            mobileGrid.innerHTML = '';
+                            for (let i = 0; i < 4; i++) {
+                                const img = images[i];
+                                const focal = img.focal || { x: 50, y: 50 };
+                                const scale = img.scale || 1.0;
+
+                                const cell = document.createElement('div');
+                                cell.className = 'mobile-grid-cell';
+                                cell.innerHTML = `
+                                    <img class="current-img" src="${img.url}" alt="${img.alt || 'Safari Photo'}" style="object-position: ${focal.x}% ${focal.y}%; transform: scale(${scale}) translate3d(0,0,0);">
+                                `;
+                                mobileGrid.appendChild(cell);
+                            }
+
+                            // Initialize mobile grid transitions
+                            window.mobileGridImages = images;
+                            if (window.initMobileGrid) {
+                                window.initMobileGrid(images);
+                            }
+                        }
+
+                        // Re-initialize the carousel logic once images are loaded
+                        if (window.initCarousel) {
+                            window.initCarousel();
+                        }
+                    } catch (e) {
+                        console.error("Carousel load failed:", e);
+                    }
+                }
+                loadCarousel();
+            </script>
+            <button class="carousel-arrow prev" aria-label="Previous slide">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="15 18 9 12 15 6"></polyline>
+                </svg>
+            </button>
+            <button class="carousel-arrow next" aria-label="Next slide">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round">
+                    <polyline points="9 18 15 12 9 6"></polyline>
+                </svg>
+            </button>
+        </div>
+    </section>
+
+    <!-- Masterclass Section (Why Choose Us) -->
+    <section class="masterclass-section" id="masterclass">
+        <div class="container">
+            <h2 class="section-title">Why Choose Dean McGregor Safaris</h2>
+            <div class="masterclass-grid">
+                <div class="masterclass-card glass-card">
+                    <h3>Master the 'Old Way' of the Bush</h3>
+                    <p>With 30+ years of experience, Dean invites you to master the Old Way of the bush. Learn the
+                        ancient language of the land by reading scuffs, signs, and the stories told by the red earth in
+                        an
+                        immersive on-foot masterclass using nothing but your senses.</p>
+                </div>
+                <div class="masterclass-card glass-card">
+                    <h3>Expert Guiding for the Explorer</h3>
+                    <p>As a Pro Guide and birding specialist, Dean transforms every walk into a masterclass in natural
+                        history. Go beyond the sightings to understand the "Why" behind the wild, from complex avian
+                        social structures to the intricate ecological tapestry of Zimbabwe.</p>
+                </div>
+                <div class="masterclass-card glass-card">
+                    <h3>Unmatched Storytelling & Atmosphere</h3>
+                    <p>The magic extends far beyond the trail. Dean creates an inspirational atmosphere that leaves
+                        lasting impressions around the evening fire. Experience legendary wit and humour during famous
+                        sundowners as tales of the wild come alive under a canopy of stars.</p>
+                </div>
+                <div class="masterclass-card glass-card">
+                    <h3>Authentic Conservation, Not Green-Washing</h3>
+                    <p>In a world of "green-washed" travel, Dean offers a perspective forged in decades of frontline
+                        Black Rhino and Victoria Falls conservation. Navigate the wild with a clear conscience, gaining
+                        grassroots insights into the real challenges and triumphs of African wildlife protection.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Contact/Inquiry Section (Book Your Journey) -->
+    <section class="contact-section" id="contact">
+        <div class="container">
+            <h2 class="section-title">Plan Your Journey</h2>
+            <div class="contact-wrapper glass-card">
+                <div class="contact-info">
+                    <h2>Enquire Now</h2>
+                    <p class="liaison-title">Contact your Safari Liaison, Justine McGregor</p>
+                    <div class="justine-intro">
+                        <div class="justine-photo">
+                            <img src="assets/images/Justine_2.jpg" alt="Justine McGregor">
+                        </div>
+                        <p class="justine-bio">
+                            Justine McGregor, our Lead Coordinator and Dean’s partner, is your dedicated port of
+                            contact. With decades of experience as a premier Zimbabwe safari operative, she ensures
+                            every detail of your
+                            safari is seamless.
+                        </p>
+                    </div>
+                    <p class="compliance-text desktop-only-compliance">By enquiring, you consent to direct communication
+                        via WhatsApp/Email. We do not store your data on this website server in accordance with SI 155
+                        of 2024.</p>
+                </div>
+                <div class="contact-portals">
+                    <a href="#enquiry-email"
+                        class="glass-card portal-card interactive-hover secure-email enquiry-trigger-modal"
+                        data-channel="email" data-goatcounter-click="inquire-email"
+                        data-goatcounter-title="Email Inquiry">
+                        <h3>Email Us</h3>
+                        <div class="portal-value">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z">
+                                </path>
+                                <polyline points="22,6 12,13 2,6"></polyline>
+                            </svg>
+                            <span class="obfuscated">moc.liamg@sirafasrogergcmnaed</span>
+                        </div>
+                        <span class="portal-cta">Send Private Enquiry →</span>
+                    </a>
+
+                    <a href="#enquiry-whatsapp" class="glass-card portal-card interactive-hover enquiry-trigger-modal"
+                        data-channel="whatsapp" data-goatcounter-click="inquire-whatsapp"
+                        data-goatcounter-title="WhatsApp Inquiry">
+                        <h3>WhatsApp Justine</h3>
+                        <div class="portal-value whatsapp-number">
+                            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="2">
+                                <path
+                                    d="M12 21.8c-1.8 0-3.5-.5-5-1.4l-.4-.2-3.7 1 1-3.6-.2-.4c-.9-1.5-1.4-3.2-1.4-5.1 0-5.4 4.4-9.8 9.8-9.8s9.8 4.4 9.8 9.8-4.4 9.8-9.8 9.8m0-21.8C5.5 0 0 5.5 0 12.1c0 2.1.5 4.1 1.6 5.9L0 24l6.2-1.6c1.8 1 3.8 1.6 5.9 1.6 6.6 0 12-5.4 12-12.1C24.1 5.5 18.6 0 12 0z" />
+                            </svg>
+                            <span class="obfuscated">9703 243 77 362+</span>
+                        </div>
+                        <span class="portal-cta">Secure Encrypted Messaging →</span>
+                    </a>
+                </div>
+                <p class="compliance-text mobile-only-compliance">By enquiring, you consent to direct communication via
+                    WhatsApp/Email. We do not store your data on this website server in accordance with SI 155 of 2024.
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials Section -->
+    <section id="testimonials" class="testimonials-section">
+        <div class="container testimonials-wrapper">
+            <h2 class="section-title">Wall of Love</h2>
+
+            <div class="testimonials-carousel-container">
+                <button class="t-arrow t-prev" aria-label="Previous Testimonial">
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="15 18 9 12 15 6"></polyline>
+                    </svg>
+                </button>
+
+                <div class="testimonials-viewport">
+                    <div id="testimonials-grid" class="testimonials-track">
+                        <!-- Testimonials will be dynamically injected here -->
+                    </div>
+                </div>
+
+                <button class="t-arrow t-next" aria-label="Next Testimonial">
+                    <svg viewBox="0 0 24 24" width="24" height="24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="9 18 15 12 9 6"></polyline>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="testimonials-dots" id="testimonials-dots">
+                <!-- Dots injected via JS -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Video Spotlight Section (In Conversation with Dean) -->
+    <section id="conversation" class="video-section">
+        <div class="container">
+            <h2 class="section-title">
+                In Conversation with Dean
+            </h2>
+            <div class="video-container glass-card">
+                <div class="audio-player-wrapper">
+                    <div class="slideshow-container" id="slideshow">
+                        <img src="assets/images/deaninbush2.jpg" class="slide slide-1 active" alt="Dean guiding">
+                        <img src="assets/images/deaninbush.jpg" class="slide slide-2" alt="Dean in the bush">
+                        <img src="assets/images/imageforvideo.jpeg" class="slide slide-3" alt="Safari scene">
+                        <div class="slideshow-overlay"></div>
+                    </div>
+
+                    <audio id="dean-audio" preload="metadata">
+                        <source src="assets/audio/deansnippet.mp3" type="audio/mpeg">
+                        <track id="audio-subtitles" kind="subtitles" src="assets/audio/subtitles.vtt" srclang="en"
+                            label="English">
+                    </audio>
+
+                    <div id="subtitles-display" class="subtitles-display"></div>
+
+                    <div id="center-play-btn" class="center-play-btn glass-panel hidden">
+                        <svg class="icon-play-center" viewBox="0 0 24 24" width="48" height="48" stroke="currentColor"
+                            stroke-width="2" fill="currentColor" stroke-linecap="round" stroke-linejoin="round">
+                            <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                        </svg>
+                        <svg class="icon-pause-center hidden" viewBox="0 0 24 24" width="48" height="48"
+                            stroke="currentColor" stroke-width="2" fill="currentColor" stroke-linecap="round"
+                            stroke-linejoin="round">
+                            <rect x="6" y="4" width="4" height="16"></rect>
+                            <rect x="14" y="4" width="4" height="16"></rect>
+                        </svg>
+                    </div>
+
+                    <div class="audio-controls glass-panel" id="bottom-controls">
+                        <button id="play-pause-btn" class="control-btn" aria-label="Play">
+                            <svg class="icon-play" viewBox="0 0 24 24" width="24" height="24" stroke="currentColor"
+                                stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <polygon points="5 3 19 12 5 21 5 3"></polygon>
+                            </svg>
+                            <svg class="icon-pause hidden" viewBox="0 0 24 24" width="24" height="24"
+                                stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"
+                                stroke-linejoin="round">
+                                <rect x="6" y="4" width="4" height="16"></rect>
+                                <rect x="14" y="4" width="4" height="16"></rect>
+                            </svg>
+                        </button>
+
+                        <div class="time-display current-time">0:00</div>
+
+                        <div class="progress-wrapper">
+                            <input type="range" id="seek-bar" class="seek-bar" value="0" step="0.1" min="0" max="100">
+                        </div>
+
+                        <div class="time-display duration-time">0:00</div>
+
+                        <div class="volume-wrapper">
+                            <button id="volume-btn" class="control-btn" aria-label="Mute/Unmute">
+                                <svg class="icon-volume" viewBox="0 0 24 24" width="20" height="20"
+                                    stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                                    <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"></path>
+                                </svg>
+                                <svg class="icon-mute hidden" viewBox="0 0 24 24" width="20" height="20"
+                                    stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round"
+                                    stroke-linejoin="round">
+                                    <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"></polygon>
+                                    <line x1="23" y1="9" x2="17" y2="15"></line>
+                                    <line x1="17" y1="9" x2="23" y2="15"></line>
+                                </svg>
+                            </button>
+                            <input type="range" id="volume-bar" class="volume-bar" min="0" max="1" step="0.1" value="1">
+                        </div>
+
+                        <button id="cc-btn" class="control-btn cc-off" aria-label="Toggle Subtitles">
+                            <svg viewBox="0 0 24 24" width="24" height="24" stroke="currentColor" stroke-width="2"
+                                fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"></path>
+                                <path d="M9 9h2v2H9z"></path>
+                                <path d="M13 9h2v2h-2z"></path>
+                            </svg>
+                        </button>
+
+                        <button id="fullscreen-btn" class="control-btn" aria-label="Toggle Fullscreen">
+                            <svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2"
+                                fill="none" stroke-linecap="round" stroke-linejoin="round">
+                                <path
+                                    d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3">
+                                </path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="video-caption">
+                    <p>From tracking the elusive cries of lions in the night to the expert guiding process at dawn, Dean
+                        reveals how the safari experience begins long before the first light.</p>
+                    <p class="video-footnote"><i>A thank you to Graham Elliott for this snippet with Dean, <a
+                                href="https://www.youtube.com/@GElliottPhotography" target="_blank"
+                                rel="noopener">https://www.youtube.com/@GElliottPhotography</a></i></p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <footer>
+        <div class="container footer-content">
+            <div class="footer-grid">
+                <div class="footer-left">
+                    <p class="footer-address"><span id="footer-address">Plot 141 Monde Village, Victoria Falls,
+                            Zimbabwe.</span></p>
+                    <div class="footer-contact-item">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path
+                                d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.246 2.248 3.484 5.232 3.484 8.412-.003 6.557-5.338 11.892-11.893 11.892-1.997-.001-3.951-.5-5.688-1.448l-6.309 1.656zm6.29-4.171c1.589.945 3.554 1.443 5.548 1.444 5.46 0 9.894-4.434 9.897-9.896 0-2.646-1.03-5.133-2.901-7.004-1.871-1.871-4.358-2.901-7.004-2.902-5.463 0-9.897 4.436-9.9 9.899 0 2.081.541 4.111 1.566 5.873l-1.006 3.677 3.768-.988l.032-.016z" />
+                        </svg>
+                        <a href="https://wa.me/263773423079">+263 77 342 3079</a>
+                    </div>
+                    <div class="footer-contact-item">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z">
+                            </path>
+                            <polyline points="22,6 12,13 2,6"></polyline>
+                        </svg>
+                        <a
+                            href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#100;&#101;&#97;&#110;&#109;&#99;&#103;&#114;&#101;&#103;&#111;&#114;&#115;&#97;&#102;&#97;&#114;&#105;&#115;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;">&#100;&#101;&#97;&#110;&#109;&#99;&#103;&#114;&#101;&#103;&#111;&#114;&#115;&#97;&#102;&#97;&#114;&#105;&#115;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;</a>
+                    </div>
+                </div>
+
+                <div class="footer-center">
+                    <p>&copy; <span id="year"></span> Dean McGregor Safaris. All rights reserved.</p>
+                    <p class="motto">"Guided by Nature. Trained by Experience."</p>
+                    <p class="footer-links">
+                        <a href="gallery.html">Full Gallery</a> |
+                        <a href="#" class="privacy-trigger">Privacy &amp; Data Protection</a> |
+                        <a href="#" class="acknowledgements-trigger">Acknowledgements</a>
+                    </p>
+                </div>
+
+                <div class="footer-right">
+                    <div class="footer-social">
+                        <a href="#" class="secure-social" data-platform="instagram" data-handle="sirafasrogergcm"
+                            aria-label="Instagram">
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                            </svg>
+                        </a>
+                        <a href="#" class="secure-social" data-platform="facebook"
+                            data-handle="10674890787516=di?php.eliforp" aria-label="Facebook">
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Testimonial Modal -->
+    <div id="testimonial-modal" class="modal-overlay">
+        <div class="modal-container glass-card">
+            <button class="modal-close" aria-label="Close modal">&times;</button>
+            <div class="modal-content">
+                <div class="modal-user-photo">
+                    <img id="modal-img" src="" alt="Customer Photo">
+                </div>
+                <blockquote id="modal-quote"></blockquote>
+                <div class="modal-attribution">
+                    <h4 id="modal-name"></h4>
+                    <p id="modal-location"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Privacy Modal -->
+    <div id="privacy-modal" class="modal-overlay">
+        <div class="modal-container glass-card">
+            <button class="modal-close" aria-label="Close modal">&times;</button>
+            <div class="modal-content policy-content" id="privacy-content"></div>
+        </div>
+    </div>
+
+    <!-- Acknowledgements Modal -->
+    <div id="acknowledgements-modal" class="modal-overlay">
+        <div class="modal-container glass-card">
+            <button class="modal-close" aria-label="Close modal">&times;</button>
+            <div class="modal-content policy-content" id="acknowledgements-content">
+                <h2>Acknowledgements</h2>
+
+                <!-- Static: Ailsa Watson (Developer) -->
+                <div class="policy-section">
+                    <h3>Web Design &amp; Development</h3>
+                    <p>We thank <strong>Ailsa Watson</strong> for the design and development of this digital platform. Built entirely from the ground up, this site leverages a secure, high-performance architecture utilizing Google Antigravity and Firebase hosting. Throughout this project, Ailsa managed the full initial infrastructure configuration and security-conscious backend deployment to the final interface design and project handover.</p>
+                    <p>This project was developed in close collaboration with business owner <strong>Justine McGregor</strong>, whose input was instrumental in refining the platform's content and user experience.</p>
+                    <p>Ailsa Watson is a Zoologist with a postgraduate background in Applied Conservation Science and African Ecosystems Management, as well as a qualified FGASA Level 2 Field Guide. You can learn more about her professional background and portfolio at <a href="#" class="secure-linkedin" data-href="/mja6202001-nosliw-alsi/ni/moc.nideknil.www//:sptth" style="color: var(--accent-gold); font-weight: 600; text-decoration: none;">LinkedIn Profile</a>.</p>
+                </div>
+
+                <!-- Dynamic: Photographers (populated by settings.js from Firestore) -->
+                <div id="photographers-acknowledgements" class="policy-section" style="display:none;">
+                    <h3>Photography</h3>
+                    <p>We extend our gratitude to the talented photographers whose work brings this platform to life:</p>
+                    <ul id="photographers-list" style="margin: 0.5rem 0 0 1.2rem; padding: 0; line-height: 2;"></ul>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module" src="firebase-init.js?v=43"></script>
+    <script type="module" src="settings.js?v=46"></script>
+    <script type="module" src="home.js?v=43"></script>
+    <script src="script.js?v=28" defer></script>
+</body>
+
+</html>

@@ -1,0 +1,36 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper function to verify admin status against the secure collection
+    function isAdmin() {
+      return request.auth != null 
+             && request.auth.token.email != null 
+             && exists(/databases/$(database)/documents/admin_users/$(request.auth.token.email.lower()));
+    }
+
+    // 1. SECURE THE ADMIN COLLECTION
+    // Only admins can read or write to this collection
+    match /admin_users/{userId} {
+      allow read, write: if isAdmin();
+    }
+
+    // 2. PUBLIC COLLECTIONS
+    // The public can read these, but only admins can write
+    match /park_operations/{document=**} { allow read: if true; allow write: if isAdmin(); }
+    match /safari_extras/{document=**} { allow read: if true; allow write: if isAdmin(); }
+    match /client_galleries/{document=**} { allow read: if true; allow write: if isAdmin(); }
+    match /site_config/{document=**} { allow read: if true; allow write: if isAdmin(); }
+    match /site_settings/{document} { 
+      allow read: if true; 
+      allow write: if isAdmin();
+      allow update: if document == "usage_tracking" 
+                    && request.resource.data.keys().hasOnly(['reads', 'date'])
+                    && request.resource.data.reads is number
+                    && request.resource.data.date is string;
+    }
+    match /guide_profile/{document=**} { allow read: if true; allow write: if isAdmin(); }
+    match /deleted_galleries/{document=**} { allow read, write: if isAdmin(); }
+  }
+}

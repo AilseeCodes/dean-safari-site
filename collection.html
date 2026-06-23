@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Safari Collections & Landscapes | Dean McGregor Safaris</title>
+    <meta name="description" content="Explore high-resolution guest and guide photography collections from custom safaris in Zimbabwe.">
+    
+    <!-- Preconnect to speed up font delivery -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400..900;1,400..900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="style.css?v=66">
+    <link rel="icon" type="image/png" href="assets/images/favicon-32x32.png" sizes="32x32">
+    <link rel="icon" type="image/png" href="assets/images/favicon.png" sizes="192x192">
+    <link rel="apple-touch-icon" href="assets/images/favicon.png">
+
+    <!-- Open Graph / Facebook Share Metadata -->
+    <meta property="og:title" content="Safari Collections & Landscapes | Dean McGregor Safaris">
+    <meta property="og:description" content="Explore high-resolution guest and guide photography collections from custom safaris in Zimbabwe.">
+    <meta property="og:image" content="https://www.deanmcgregorsafaris.com/assets/images/gallery/tentinthestars.jpeg">
+    <meta property="og:url" content="https://www.deanmcgregorsafaris.com/collection">
+    <meta property="og:type" content="website">
+
+    <!-- Twitter Card Share Metadata -->
+    <meta name="twitter:card" content="summary_large_image">
+    <style>
+        body { background: #8B7E66; }
+
+        .collection-hero {
+            height: 60vh;
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            color: var(--white);
+            position: relative;
+        }
+
+        .collection-hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.4);
+        }
+
+        .collection-hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .collection-hero h1 {
+            font-size: clamp(3rem, 10vw, 5rem);
+            text-transform: uppercase;
+            letter-spacing: 8px;
+            margin: 0;
+        }
+
+        .back-nav {
+            padding: 4rem 0 0.5rem 0; /* More space from hero, keep tight to content */
+            background: #8B7E66; /* Matching the collection background */
+        }
+
+        .btn-back {
+            color: var(--sunset-gold);
+            text-decoration: none;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.4rem; /* Tight gap */
+            transition: all 0.3s ease;
+            font-family: var(--font-primary);
+            font-size: 1.1rem; /* Matched size */
+        }
+
+        .btn-back:hover {
+            transform: translateX(-5px);
+            opacity: 0.8;
+        }
+
+        .back-arrow {
+            font-size: 1.3rem;
+            display: inline-block;
+            margin-left: -0.2rem; /* Aligns the 'ink' tip with the grid margin */
+            line-height: 1;
+        }
+
+        .photo-grid-container {
+            padding-bottom: 8rem;
+            background: #8B7E66;
+            min-height: 40vh;
+        }
+
+        .photo-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-auto-rows: 300px;
+            grid-auto-flow: dense;
+            gap: 8px;
+        }
+
+        .photo-item {
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            background: #2a2a2a;
+        }
+
+        .photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.6s cubic-bezier(0.165, 0.84, 0.44, 1);
+        }
+
+        .photo-item:hover img {
+            transform: scale(1.05);
+        }
+
+        /* Span logic */
+        .photo-item.wide { grid-column: span 2; }
+        .photo-item.tall { grid-row: span 2; }
+        .photo-item.big { grid-column: span 2; grid-row: span 2; }
+
+        /* Lightman Overlay (copied from gallery.html) */
+        .lightman-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            backdrop-filter: blur(15px);
+            z-index: 3000;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: all 0.4s ease;
+        }
+
+        .lightman-overlay.active {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .lightman-content {
+            position: relative;
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 80px;
+        }
+
+        .lightman-img {
+            max-width: 100%;
+            max-height: 90vh;
+            object-fit: contain;
+            box-shadow: 0 0 50px rgba(0,0,0,0.5);
+        }
+
+        .lightman-close {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            color: #fff;
+            font-size: 3rem;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .lightman-nav {
+            position: absolute;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 1.5rem;
+            pointer-events: none;
+        }
+
+        .lightman-arrow {
+            width: 60px;
+            height: 60px;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            cursor: pointer;
+            pointer-events: auto;
+        }
+
+        @media (max-width: 768px) {
+            .photo-grid { grid-template-columns: 1fr; grid-auto-rows: auto; }
+            .photo-item.wide, .photo-item.tall, .photo-item.big { grid-column: span 1; grid-row: span 1; }
+            .collection-hero { height: 40vh; }
+            .collection-hero h1 { font-size: 2.5rem; letter-spacing: 4px; }
+            
+            /* Mobile Lightbox Overrides */
+            .lightman-content {
+                padding: 0 !important;
+                width: 100vw !important;
+                height: 100vh !important;
+            }
+            .lightman-img {
+                width: 100% !important;
+                height: 100% !important;
+                max-width: 100vw !important;
+                max-height: 100vh !important;
+                object-fit: contain !important;
+                box-shadow: none !important;
+            }
+            .lightman-nav {
+                display: none !important;
+            }
+            .lightman-close {
+                top: 20px !important;
+                right: 20px !important;
+                font-size: 2.5rem !important;
+                z-index: 3100 !important;
+                text-shadow: 0 2px 10px rgba(0, 0, 0, 0.8) !important;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <nav class="navbar glass-panel">
+        <div class="container nav-wrapper">
+            <a href="index.html#hero" class="logo">DEAN McGREGOR <span>SAFARIS</span></a>
+            <button class="nav-toggle" aria-label="Toggle Navigation">
+                <span class="hamburger"></span>
+            </button>
+            <ul class="nav-links">
+                <li><a href="index.html#hero">Home</a></li>
+                <li class="nav-item dropdown">
+                    <a href="index.html#experience" class="nav-link dropdown-toggle">Your Guide</a>
+                    <ul class="dropdown-menu">
+                        <div class="dropdown-menu-inner">
+                            <li><a href="about-dean.html">Dean McGregor</a></li>
+                            <li><a href="index.html#conversation">Wild Words with Dean</a></li>
+                            <li><a href="index.html#testimonials">Guest Testimonials</a></li>
+                        </div>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a href="index.html#services" class="nav-link dropdown-toggle">Our Safaris</a>
+                    <ul class="dropdown-menu">
+                        <div class="dropdown-menu-inner" id="safaris-dropdown-list">
+                            <!-- Dynamically populated from operations -->
+                        </div>
+                    </ul>
+                </li>
+                <li class="nav-item dropdown">
+                    <a href="index.html#gallery" class="nav-link dropdown-toggle">Gallery</a>
+                    <ul class="dropdown-menu">
+                        <div class="dropdown-menu-inner">
+                            <li><a href="gallery.html">View Full Gallery</a></li>
+                            <li class="dropdown-item has-sub">
+                                <span class="sub-toggle">Collections</span>
+                                <ul class="sub-dropdown" id="collections-dropdown-list">
+                                    <!-- Dynamically populated from galleries -->
+                                </ul>
+                            </li>
+                        </div>
+                    </ul>
+                </li>
+                <li><a href="index.html#masterclass">Why Choose Us</a></li>
+                <li><a href="index.html#contact">Contact Us</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <header id="hero" class="collection-hero">
+        <div class="collection-hero-content">
+            <span class="section-tag" style="color: #fff; opacity: 0.8;">Safari Collection</span>
+            <h1 id="title">Loading...</h1>
+        </div>
+    </header>
+
+    <nav class="back-nav">
+        <div class="container"><a id="btn-back-top" href="gallery.html" class="btn-back"><span class="back-arrow">←</span> Back to All Collections</a></div>
+    </nav>
+
+    <main class="photo-grid-container">
+        <div class="container">
+            <div id="grid" class="photo-grid"></div>
+            <div style="margin-top: 4rem; text-align: left;">
+                <a id="btn-back-bottom" href="gallery.html" class="btn-back"><span class="back-arrow">←</span> Back to All Collections</a>
+            </div>
+        </div>
+    </main>
+
+    <div class="lightman-overlay" id="lightman">
+        <div class="lightman-content">
+            <span class="lightman-close" id="lightman-close">&times;</span>
+            <img src="" class="lightman-img" id="lightman-img">
+            <div class="lightman-nav">
+                <div class="lightman-arrow" id="lightman-prev">←</div>
+                <div class="lightman-arrow" id="lightman-next">→</div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { app } from './firebase-init.js';
+        import { getFirestore, doc, getDoc } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
+
+        const db = getFirestore(app);
+        const urlParams = new URLSearchParams(window.location.search);
+        const collectionId = urlParams.get('id');
+
+        const hero = document.getElementById('hero');
+        const titleEl = document.getElementById('title');
+        const gridEl = document.getElementById('grid');
+
+        // Lightman
+        const lightman = document.getElementById('lightman');
+        const lightmanImg = document.getElementById('lightman-img');
+        let photos = [];
+        let currentIndex = 0;
+
+        if (!collectionId) {
+            window.location.href = 'gallery.html';
+        } else {
+            // Set back links to return to gallery with this collection scrolled into view
+            const backUrl = `gallery.html?scrollTo=${encodeURIComponent(collectionId)}`;
+            document.querySelectorAll('#btn-back-top, #btn-back-bottom').forEach(a => a.href = backUrl);
+            loadCollection();
+        }
+
+        async function loadCollection() {
+            const docRef = doc(db, "client_galleries", collectionId);
+            const docSnap = await getDoc(docRef);
+
+            if (docSnap.exists()) {
+                const data = docSnap.data();
+                titleEl.textContent = data.title;
+                
+                
+                const heroObj = data.heroImage || data.albumCover || (data.photos && data.photos[0]);
+                const heroUrl = typeof heroObj === 'object' ? heroObj.url : heroObj;
+                if (heroUrl) {
+                    hero.style.backgroundImage = `url('${heroUrl}')`;
+                    if (typeof heroObj === 'object' && heroObj.focal) {
+                        hero.style.backgroundPosition = `${heroObj.focal.x}% ${heroObj.focal.y}%`;
+                    } else {
+                        hero.style.backgroundPosition = 'center';
+                    }
+                }
+
+                photos = data.photos || [];
+                const template = data.template || 't1';
+
+                photos.forEach((photo, index) => {
+                    const url = typeof photo === 'object' ? photo.url : photo;
+                    const focal = photo.focal || { x: 50, y: 50 };
+                    const scale = photo.scale || 1.0;
+                    
+                    const item = document.createElement('div');
+                    item.className = 'photo-item';
+                    
+                    // Apply Template
+                    if (template === 't1') {
+                        if (index % 4 === 0) item.classList.add('big');
+                        else if (index % 4 === 1) item.classList.add('wide');
+                    } else if (template === 't2') {
+                        if (index % 2 === 0) item.classList.add('wide');
+                    } else if (template === 't3') {
+                        if (index % 4 === 0) { item.classList.add('wide'); item.style.gridColumn = 'span 4'; }
+                    } else if (template === 't4') {
+                        if (index % 3 === 2) { item.classList.add('big'); item.style.gridRow = 'span 3'; }
+                    }
+
+                    item.innerHTML = `<img src="${url}" style="object-position: ${focal.x}% ${focal.y}%; transform: scale(${scale});">`;
+                    item.onclick = () => openLightman(index);
+                    gridEl.appendChild(item);
+                });
+            }
+        }
+
+        const isMobile = () => window.matchMedia('(max-width: 768px)').matches;
+
+        function openLightman(index) {
+            currentIndex = index;
+            const photo = photos[currentIndex];
+            lightmanImg.removeAttribute('src');
+            lightmanImg.style.transform = '';
+            lightmanImg.style.transformOrigin = '';
+            lightmanImg.src = typeof photo === 'object' ? photo.url : photo;
+            lightman.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeLightman() {
+            lightman.classList.remove('active');
+            document.body.style.overflow = '';
+            // Clear src and reset transform settings after the transition fade-out completes (400ms) to avoid flashing
+            setTimeout(() => {
+                if (!lightman.classList.contains('active')) {
+                    lightmanImg.removeAttribute('src');
+                    lightmanImg.style.transform = '';
+                    lightmanImg.style.transformOrigin = '';
+                }
+            }, 400);
+        }
+
+        document.getElementById('lightman-close').onclick = closeLightman;
+
+        document.getElementById('lightman-next').onclick = () => {
+            if (isMobile()) return;
+            currentIndex = (currentIndex + 1) % photos.length;
+            const photo = photos[currentIndex];
+            lightmanImg.src = typeof photo === 'object' ? photo.url : photo;
+        };
+
+        document.getElementById('lightman-prev').onclick = () => {
+            if (isMobile()) return;
+            currentIndex = (currentIndex - 1 + photos.length) % photos.length;
+            const photo = photos[currentIndex];
+            lightmanImg.src = typeof photo === 'object' ? photo.url : photo;
+        };
+
+        window.onkeydown = (e) => {
+            if (!lightman.classList.contains('active')) return;
+            
+            if (e.key === 'Escape') {
+                closeLightman();
+                return;
+            }
+            
+            if (isMobile()) return;
+            
+            if (e.key === 'ArrowRight') {
+                document.getElementById('lightman-next').click();
+            }
+            if (e.key === 'ArrowLeft') {
+                document.getElementById('lightman-prev').click();
+            }
+        };
+
+        // Dismiss by tapping black space (overlay or content wrapper but not image)
+        lightman.onclick = (e) => {
+            if (e.target === lightman || e.target.classList.contains('lightman-content')) {
+                closeLightman();
+            }
+        };
+
+        // Swipe to dismiss and pinch-to-zoom gestures on mobile
+        let touchStartX = 0;
+        let touchStartY = 0;
+        let touchEndX = 0;
+        let touchEndY = 0;
+
+        let isPinching = false;
+        let wasPinching = false;
+        let initialPinchDistance = 0;
+        let pinchScale = 1;
+
+        lightman.addEventListener('touchstart', (e) => {
+            if (!isMobile()) return;
+
+            if (e.touches.length === 2) {
+                isPinching = true;
+                wasPinching = true;
+                initialPinchDistance = Math.hypot(
+                    e.touches[0].clientX - e.touches[1].clientX,
+                    e.touches[0].clientY - e.touches[1].clientY
+                );
+
+                // Smart Focal Pinpoint Zoom Origin Calculation
+                const rect = lightmanImg.getBoundingClientRect();
+                const centerX = (e.touches[0].clientX + e.touches[1].clientX) / 2;
+                const centerY = (e.touches[0].clientY + e.touches[1].clientY) / 2;
+
+                // Map screen coordinates relative to image rect percentages
+                const originX = ((centerX - rect.left) / rect.width) * 100;
+                const originY = ((centerY - rect.top) / rect.height) * 100;
+
+                // Clamp percentages between 0% and 100%
+                const clampedX = Math.max(0, Math.min(100, originX));
+                const clampedY = Math.max(0, Math.min(100, originY));
+
+                lightmanImg.style.transformOrigin = `${clampedX}% ${clampedY}%`;
+                lightmanImg.style.transition = 'none';
+            } else if (e.touches.length === 1 && !wasPinching) {
+                touchStartX = e.touches[0].clientX;
+                touchStartY = e.touches[0].clientY;
+            }
+        }, { passive: true });
+
+        lightman.addEventListener('touchmove', (e) => {
+            if (!isMobile()) return;
+
+            if (isPinching && e.touches.length === 2) {
+                const currentDistance = Math.hypot(
+                    e.touches[0].clientX - e.touches[1].clientX,
+                    e.touches[0].clientY - e.touches[1].clientY
+                );
+                pinchScale = currentDistance / initialPinchDistance;
+                
+                // Allow stretch-zoom clamping between 1.0 and 4.0
+                pinchScale = Math.max(1, Math.min(4, pinchScale));
+                lightmanImg.style.transform = `scale(${pinchScale})`;
+            }
+
+            // Always lock underlying background scroll when lightbox overlay is open
+            if (e.cancelable) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+
+        lightman.addEventListener('touchend', (e) => {
+            if (!isMobile()) return;
+
+            if (e.touches.length === 0) {
+                if (wasPinching) {
+                    // Ping back to original scale (1) with elastic ease-out
+                    lightmanImg.style.transition = 'transform 0.3s cubic-bezier(0.25, 1, 0.5, 1)';
+                    lightmanImg.style.transform = 'scale(1)';
+                    
+                    isPinching = false;
+                    wasPinching = false;
+
+                    // Cleanly reset transform origin after transition scales down
+                    setTimeout(() => {
+                        if (!isPinching && !wasPinching) {
+                            lightmanImg.style.transformOrigin = '';
+                        }
+                    }, 300);
+                } else {
+                    touchEndX = e.changedTouches[0].clientX;
+                    touchEndY = e.changedTouches[0].clientY;
+                    handleSwipeGesture();
+                }
+            } else if (e.touches.length === 1) {
+                // Wait for the final finger to be lifted to run the transition reset
+                isPinching = false;
+            }
+        }, { passive: true });
+
+        function handleSwipeGesture() {
+            if (!isMobile()) return;
+            
+            const diffX = touchEndX - touchStartX;
+            const diffY = touchEndY - touchStartY;
+            const threshold = 50; // swipe 50px to dismiss
+            
+            if (Math.abs(diffX) > threshold || Math.abs(diffY) > threshold) {
+                closeLightman();
+            }
+        }
+    </script>
+    <footer>
+        <div class="container footer-content">
+            <div class="footer-grid">
+                <div class="footer-left">
+                    <p class="footer-address">Plot 141 Monde Village, Victoria Falls, Zimbabwe.</p>
+                    <div class="footer-contact-item">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+                            <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.246 2.248 3.484 5.232 3.484 8.412-.003 6.557-5.338 11.892-11.893 11.892-1.997-.001-3.951-.5-5.688-1.448l-6.309 1.656zm6.29-4.171c1.589.945 3.554 1.443 5.548 1.444 5.46 0 9.894-4.434 9.897-9.896 0-2.646-1.03-5.133-2.901-7.004-1.871-1.871-4.358-2.901-7.004-2.902-5.463 0-9.897 4.436-9.9 9.899 0 2.081.541 4.111 1.566 5.873l-1.006 3.677 3.768-.988l.032-.016z" />
+                        </svg>
+                        <a href="https://wa.me/263773423079">+263 77 342 3079</a>
+                    </div>
+                    <div class="footer-contact-item">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"></path>
+                            <polyline points="22,6 12,13 2,6"></polyline>
+                        </svg>
+                        <a href="&#109;&#97;&#105;&#108;&#116;&#111;&#58;&#100;&#101;&#97;&#110;&#109;&#99;&#103;&#114;&#101;&#103;&#111;&#114;&#115;&#97;&#102;&#97;&#114;&#105;&#115;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;">&#100;&#101;&#97;&#110;&#109;&#99;&#103;&#114;&#101;&#103;&#111;&#114;&#115;&#97;&#102;&#97;&#114;&#105;&#115;&#64;&#103;&#109;&#97;&#105;&#108;&#46;&#99;&#111;&#109;</a>
+                    </div>
+                </div>
+                <div class="footer-center">
+                    <p>&copy; <span id="year"></span> Dean McGregor Safaris. All rights reserved.</p>
+                    <p class="motto">"Guided by Nature. Trained by Experience."</p>
+                    <p class="footer-links">
+                        <a href="#" class="privacy-trigger">Privacy &amp; Data Protection</a> |
+                        <a href="#" class="acknowledgements-trigger">Acknowledgements</a>
+                    </p>
+                </div>
+                <div class="footer-right">
+                    <div class="footer-social">
+                        <a href="#" class="secure-social" data-platform="instagram" data-handle="sirafasrogergcm" aria-label="Instagram">
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <rect x="2" y="2" width="20" height="20" rx="5" ry="5"></rect>
+                                <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"></path>
+                                <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"></line>
+                            </svg>
+                        </a>
+                        <a href="#" class="secure-social" data-platform="facebook" data-handle="10674890787516=di?php.eliforp" aria-label="Facebook">
+                            <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"></path>
+                            </svg>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </footer>
+<div id="privacy-modal" class="modal-overlay">
+    <div class="modal-container glass-card">
+        <button class="modal-close" aria-label="Close modal">&times;</button>
+        <div class="modal-content policy-content" id="privacy-content"></div>
+    </div>
+</div>
+
+    <script type="module" src="firebase-init.js?v=43"></script>
+    <script type="module" src="settings.js?v=46"></script>
+    <script src="script.js?v=28" defer></script>
+</body>
+</html>
+
+<!-- Acknowledgements Modal -->
+<div id="acknowledgements-modal" class="modal-overlay">
+    <div class="modal-container glass-card">
+        <button class="modal-close" aria-label="Close modal">&times;</button>
+        <div class="modal-content policy-content" id="acknowledgements-content">
+            <h2>Acknowledgements</h2>
+            <div class="policy-section">
+                <h3>Web Design &amp; Development</h3>
+                <p>We thank <strong>Ailsa Watson</strong> for the design and development of this digital platform. Built entirely from the ground up, this site leverages a secure, high-performance architecture utilizing Google Antigravity and Firebase hosting. Throughout this project, Ailsa managed the full initial infrastructure configuration and security-conscious backend deployment to the final interface design and project handover.</p>
+                <p>This project was developed in close collaboration with business owner <strong>Justine McGregor</strong>, whose input was instrumental in refining the platform's content and user experience.</p>
+                <p>Ailsa Watson is a Zoologist with a postgraduate background in Applied Conservation Science and African Ecosystems Management, as well as a qualified FGASA Level 2 Field Guide. You can learn more about her professional background and portfolio at <a href="#" class="secure-linkedin" data-href="/mja6202001-nosliw-alsi/ni/moc.nideknil.www//:sptth" style="color: var(--accent-gold); font-weight: 600; text-decoration: none;">LinkedIn Profile</a>.</p>
+            </div>
+            <div id="photographers-acknowledgements" class="policy-section" style="display:none;">
+                <h3>Photography</h3>
+                <p>We extend our gratitude to the talented photographers whose work brings this platform to life:</p>
+                <ul id="photographers-list" style="margin: 0.5rem 0 0 1.2rem; padding: 0; line-height: 2;"></ul>
+            </div>
+        </div>
+    </div>
+</div>

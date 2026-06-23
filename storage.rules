@@ -1,0 +1,48 @@
+rules_version = '2';
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    // Helper function to check if user is an admin via the admin_users collection
+    function isAdmin() {
+      return request.auth != null 
+             && request.auth.token.email != null 
+             && firestore.exists(/databases/(default)/documents/admin_users/$(request.auth.token.email.lower()));
+    }
+
+    // 1. Private "Washing" Area: Only Admins can touch this
+    match /private_uploads/{allPaths=**} {
+      allow read, write: if isAdmin();
+    }
+
+    // 2. Public Galleries
+    match /galleries/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // 3. Public Safari Operations
+    match /safaris/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // 4. Public Guide Profile
+    match /guide_profile/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // 5. Home Carousel Images
+    match /home_carousel/{allPaths=**} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+
+    // 6. Root files (like album covers if any)
+    match /{allFiles=*} {
+      allow read: if true;
+      allow write: if isAdmin();
+    }
+  }
+}
