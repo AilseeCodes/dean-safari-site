@@ -51,44 +51,14 @@ graph TD
 
 ---
 
-## 🚀 Setup & Local Execution
+## 🔒 Repository Status
 
-Follow these steps to run the application locally or deploy it to your own Firebase project:
+This repository is an archival showcase of a proprietary client project, shared exclusively for portfolio and recruitment evaluation purposes. The application relies on private database instances, protected cloud functions, and specific configurations that are not publicly available.
 
-### Prerequisites
-* [Node.js](https://nodejs.org/) (v18 or higher recommended)
-* [Firebase CLI](https://firebase.google.com/docs/cli) (`npm install -g firebase-tools`)
-
-### 1. Clone & Install Dependencies
-```bash
-git clone https://github.com/AilseeCodes/safari-operations-portal.git
-cd safari-operations-portal
-
-# Install Cloud Functions dependencies
-cd functions
-npm install
-cd ..
-```
-
-### 2. Configure Firebase Local Emulators
-Initialize the Firebase configuration to point to your project:
-```bash
-firebase use --add
-```
-Set up local environment emulation to safely run Firestore, Functions, and Hosting:
-```bash
-firebase emulators:start
-```
-Once running, open the local instance at [http://localhost:5000](http://localhost:5000) or check the Emulator Suite UI at [http://localhost:4000](http://localhost:4000).
-
-### 3. Deployment
-To push rules, hosting files, database indexes, and cloud functions to your live Firebase environment:
-```bash
-firebase deploy
-```
+**Deployment, replication, or hosting of this codebase is strictly prohibited.**
 
 ---
 
 ## 📄 Licence
 
-This codebase is proprietary. Permission is granted solely to download, inspect, and execute the project locally for portfolio review and recruitment evaluation purposes. Re-hosting, modification, replication, or commercial redistribution of any visual or functional asset is strictly prohibited. See the [LICENCE](LICENSE) file for more information.
+This codebase is proprietary. It is provided here strictly for code-review and portfolio evaluation. Re-hosting, modification, deployment, replication, or commercial redistribution of any visual, structural, or functional asset is strictly prohibited. See the [LICENCE](LICENSE) file for more information.
